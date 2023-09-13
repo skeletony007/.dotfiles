@@ -1,0 +1,5 @@
+#!/bin/bash
+
+./camilladsp aux_steelseries_arctis_7-EQ.yml
+./camilladsp steelseries_arctis_7-EQ.yml
+

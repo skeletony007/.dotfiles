@@ -1,0 +1,124 @@
+---
+# This configuration for Henrik Enquist's CamillaDSP was created based on
+# parametric equalizer correction data from Jaako Pasanen's AutoEq project
+# AutoEq (https://github.com/jaakkopasanen/AutoEq) 
+# CamillaDSP (https://github.com/HEnquist/camilladsp)
+
+devices:
+  samplerate: 48000
+  chunksize: 128
+  queuelimit: 1
+  capture:
+    type: CoreAudio
+    channels: 2
+    device: "BlackHole 2ch"
+  playback:
+    type: CoreAudio
+    channels: 2
+    device: "Arctis 7 Game"
+filters:
+  01_Preamp_Gain:
+    type: Gain
+    parameters:
+      gain: -4.3
+      inverted: false
+      mute: false
+  Correction_Eq_Band_0:
+    type: Biquad
+    parameters:
+      type: Peaking
+      freq: 105.0
+      q: 0.7
+      gain: 4.2
+  Correction_Eq_Band_1:
+    type: Biquad
+    parameters:
+      type: Peaking
+      freq: 80.0
+      q: 0.35
+      gain: -5.3
+  Correction_Eq_Band_2:
+    type: Biquad
+    parameters:
+      type: Peaking
+      freq: 875.0
+      q: 0.64
+      gain: 3.3
+  Correction_Eq_Band_3:
+    type: Biquad
+    parameters:
+      type: Peaking
+      freq: 213.0
+      q: 0.5
+      gain: -1.9
+  Correction_Eq_Band_4:
+    type: Biquad
+    parameters:
+      type: Peaking
+      freq: 43.0
+      q: 1.54
+      gain: 2.8
+  Correction_Eq_Band_5:
+    type: Biquad
+    parameters:
+      type: Peaking
+      freq: 10000.0
+      q: 0.7
+      gain: -1.1
+  Correction_Eq_Band_6:
+    type: Biquad
+    parameters:
+      type: Peaking
+      freq: 7629.0
+      q: 1.6
+      gain: 2.6
+  Correction_Eq_Band_7:
+    type: Biquad
+    parameters:
+      type: Peaking
+      freq: 4414.0
+      q: 4.77
+      gain: 4.1
+  Correction_Eq_Band_8:
+    type: Biquad
+    parameters:
+      type: Peaking
+      freq: 5741.0
+      q: 5.39
+      gain: -4.6
+  Correction_Eq_Band_9:
+    type: Biquad
+    parameters:
+      type: Peaking
+      freq: 1844.0
+      q: 5.15
+      gain: -1.1
+pipeline:
+- type: Filter
+  channel: 0
+  names:
+  - 01_Preamp_Gain
+  - Correction_Eq_Band_0
+  - Correction_Eq_Band_1
+  - Correction_Eq_Band_2
+  - Correction_Eq_Band_3
+  - Correction_Eq_Band_4
+  - Correction_Eq_Band_5
+  - Correction_Eq_Band_6
+  - Correction_Eq_Band_7
+  - Correction_Eq_Band_8
+  - Correction_Eq_Band_9
+- type: Filter
+  channel: 1
+  names:
+  - 01_Preamp_Gain
+  - Correction_Eq_Band_0
+  - Correction_Eq_Band_1
+  - Correction_Eq_Band_2
+  - Correction_Eq_Band_3
+  - Correction_Eq_Band_4
+  - Correction_Eq_Band_5
+  - Correction_Eq_Band_6
+  - Correction_Eq_Band_7
+  - Correction_Eq_Band_8
+  - Correction_Eq_Band_9

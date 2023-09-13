@@ -1,0 +1,30 @@
+devices:
+  samplerate: 48000
+  chunksize: 128
+  capture:
+    type: CoreAudio
+    channels: 2
+    device: "BlackHole 2ch"
+  playback:
+    type: CoreAudio
+    channels: 2
+    device: "MacBook Air Speakers"
+
+mixers:
+  stereo:
+    channels:
+      in: 2
+      out: 2
+    mapping:
+    - dest: 0
+      sources:
+      - channel: 0
+        gain: -3
+    - dest: 1
+      sources:
+      - channel: 1
+        gain: -3
+
+pipeline:
+  - type: Mixer
+    name: stereo
