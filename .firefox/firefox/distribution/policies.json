@@ -1,0 +1,143 @@
+{
+  "__COMMENT__ General Deployment": "See https://github.com/mozilla/policy-templates/blob/master/README.md",
+  "__COMMENT__ Deploying uBlock Origin": "See https://github.com/mozilla/policy-templates/blob/master/README.md#3rdparty, https://github.com/uBlockOrigin/uBlock-issues/wiki/Deploying-uBlock-Origin#customizing-the-settings",
+  "policies": {
+    "3rdparty": {
+      "Extensions": {
+        "uBlock0@raymondhill.net": {
+          "adminSettings": {
+            "userSettings": {
+              "advancedUserEnabled": true,
+              "contextMenuEnabled": false,
+              "uiTheme": "dark",
+              "externalLists": "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/LegitimateURLShortener.txt\nhttps://raw.githubusercontent.com/skeletony007/uAssets/main/filters/anoyances.txt\nhttps://www.i-dont-care-about-cookies.eu/abp/",
+              "importedLists": [
+                "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/LegitimateURLShortener.txt",
+                "https://raw.githubusercontent.com/skeletony007/uAssets/main/filters/anoyances.txt",
+                "https://www.i-dont-care-about-cookies.eu/abp/"
+              ],
+              "popupPanelSections": 31
+            },
+            "selectedFilterLists": [
+              "user-filters",
+              "ublock-filters",
+              "ublock-badware",
+              "ublock-privacy",
+              "ublock-quick-fixes",
+              "ublock-abuse",
+              "ublock-unbreak",
+              "easylist",
+              "adguard-spyware",
+              "easyprivacy",
+              "urlhaus-1",
+              "adguard-annoyance",
+              "fanboy-annoyance",
+              "ublock-annoyances",
+              "plowe-0",
+              "https://www.i-dont-care-about-cookies.eu/abp/",
+              "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/LegitimateURLShortener.txt",
+              "https://raw.githubusercontent.com/skeletony007/uAssets/main/filters/anoyances.txt"
+            ],
+            "dynamicFilteringString": "* * 3p-script block\n* * 3p-frame block\n* * 3p block\nwww.youtube.com ytimg.com * noop\nwww.youtube.com googlevideo.com * noop\nopen.spotify.com scdn.co * noop\nwww.youtube.com ggpht.com * noop\nwww.chess.com cloudflare.net * noop\nwww.chess.com chesscomfiles.com * noop\nopen.spotify.com spotifycdn.com * noop\ngithub.com githubassets.com * noop\n* googleusercontent.com * noop\ncrypt.ee googleapis.com * noop\nwww.disneyplus.com bamgrid.com * noop\nwww.disneyplus.com cloudfront.net * noop\nwww.disneyplus.com disney-plus.net * noop\nwww.disneyplus.com dss-eu.map.fastly.net * noop\nwww.disneyplus.com dssott.com * noop\ngithub.com githubusercontent.com * noop\ngoogle.com gstatic.com * noop\nspotalike.com spotify.com * noop\nweb.whatsapp.com whatsapp.net * noop\nopen.spotify.com map.fastly.net * noop\nwww.youtube.com google.com * noop\n* duosecurity.com * noop\nwww.youtube.com gstatic.com * noop\nwww.reddit.com reddit.map.fastly.net * noop\nwww.reddit.com redditmedia.com * noop\nwww.reddit.com redditstatic.com * noop\n* googleapis.com * noop\nopen.spotify.com dscc.akamai.net * noop"
+          }
+        }
+      }
+    },
+    "BackgroundAppUpdate": false,
+    "Containers": {
+      "Default": []
+    },
+    "DisableFirefoxAccounts": true,
+    "ManualAppUpdateOnly": true,
+    "DisableFeedbackCommands": true,
+    "DisablePrivateBrowsing": true,
+    "DisablePocket": true,
+    "DontCheckDefaultBrowser": true,
+    "ExtensionSettings": {
+      "*": {
+        "installation_mode": "allowed",
+        "updates_disabled": true,
+        "allowed_types": ["extension", "theme"]
+      },
+      "{884081d0-2276-47ae-915a-d702844f142d}": {
+        "installation_mode": "normal_installed",
+        "updates_disabled": true,
+        "install_url": "https://github.com/skeletony007/.dotfiles/raw/main/.firefox/addon/TSTDark-1.0.firefox.signed.xpi"
+      },
+      "{e58d3966-3d76-4cd9-8552-1582fbc800c1}": {
+        "installation_mode": "force_installed",
+        "updates_disabled": true,
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/buster-captcha-solver/latest.xpi"
+      },
+      "{93f81583-1fd4-45cc-bff4-abba952167bb}": {
+        "installation_mode": "normal_installed",
+        "updates_disabled": true,
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/jiffy-reader/latest.xpi"
+      },
+      "keepassxc-browser@keepassxc.org": {
+        "installation_mode": "normal_installed",
+        "updates_disabled": true,
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/keepassxc-browser/latest.xpi"
+      },
+      "redirector@einaregilsson.com": {
+        "installation_mode": "force_installed",
+        "updates_disabled": true,
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/redirector/latest.xpi"
+      },
+      "{32af1358-428a-446d-873e-5f8eb5f2a72e}": {
+        "installation_mode": "force_installed",
+        "updates_disabled": true,
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/save-all-images-webextension/latest.xpi"
+      },
+      "{531906d3-e22f-4a6c-a102-8057b88a1a63}": {
+        "installation_mode": "force_installed",
+        "updates_disabled": true,
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/single-file/latest.xpi"
+      },
+      "skipredirect@sblask": {
+        "installation_mode": "force_installed",
+        "updates_disabled": true,
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/skip-redirect/latest.xpi"
+      },
+      "sponsorBlocker@ajay.app": {
+        "installation_mode": "normal_installed",
+        "updates_disabled": true,
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/sponsorblock/latest.xpi"
+      },
+      "{c607c8df-14a7-4f28-894f-29e8722976af}": {
+        "installation_mode": "force_installed",
+        "updates_disabled": true,
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/temporary-containers/latest.xpi"
+      },
+      "jid0-3GUEt1r69sQNSrca5p8kx9Ezc3U@jetpack": {
+        "installation_mode": "normal_installed",
+        "updates_disabled": true,
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/terms-of-service-didnt-read/latest.xpi"
+      },
+      "treestyletab@piro.sakura.ne.jp": {
+        "installation_mode": "normal_installed",
+        "updates_disabled": true,
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/tree-style-tab/latest.xpi"
+      },
+      "uBlock0@raymondhill.net": {
+        "installation_mode": "force_installed",
+        "updates_disabled": true,
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi"
+      },
+      "{aecec67f-0d10-4fa7-b7c7-609a2db280cf}": {
+        "installation_mode": "force_installed",
+        "updates_disabled": true,
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/violentmonkey/latest.xpi"
+      }
+    },
+    "NoDefaultBookmarks": true,
+    "UserMessaging": {
+      "WhatsNew": true,
+      "ExtensionRecommendations": false,
+      "FeatureRecommendations": false,
+      "UrlbarInterventions": false,
+      "SkipOnboarding": false,
+      "MoreFromMozilla": false
+    }
+  }
+}
