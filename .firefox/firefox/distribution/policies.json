@@ -1,6 +1,7 @@
 {
   "__COMMENT__ General Deployment": "See https://github.com/mozilla/policy-templates/blob/master/README.md",
   "__COMMENT__ Deploying uBlock Origin": "See https://github.com/mozilla/policy-templates/blob/master/README.md#3rdparty, https://github.com/uBlockOrigin/uBlock-issues/wiki/Deploying-uBlock-Origin#customizing-the-settings",
+  "__COMMENT__ Deploying Addons": "See about:support#add-ons",
   "policies": {
     "3rdparty": {
       "Extensions": {
@@ -128,6 +129,11 @@
         "installation_mode": "force_installed",
         "updates_disabled": true,
         "install_url": "https://addons.mozilla.org/firefox/downloads/latest/violentmonkey/latest.xpi"
+      },
+      "tridactyl.vim.betas.nonewtab@cmcaine.co.uk": {
+        "installation_mode": "normal_installed",
+        "updates_disabled": true,
+        "install_url": "https://tridactyl.cmcaine.co.uk/betas/nonewtab/tridactyl_no_new_tab_beta-latest.xpi"
       }
     },
     "NoDefaultBookmarks": true,
