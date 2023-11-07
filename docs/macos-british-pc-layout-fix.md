@@ -37,3 +37,8 @@ Re-connect any external mouse and Quit any new Keyboard Setup Assistant instance
 
 \* External mouse may 'combine' with keyboard on USB Hub.
 
+**Sources**
+
+- https://discussions.apple.com/thread/1012352
+- https://apple.stackexchange.com/questions/278729/different-keyboard-mapping-on-external-keyboard
+
