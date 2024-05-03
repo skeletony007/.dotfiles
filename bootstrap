@@ -4,10 +4,12 @@ all_packages="$(< ~/.dotfiles/common)"
 
 case "$(uname)" in
     Darwin)
-        all_packages+="\n$(< ~/.dotfiles/osx)"
+        all_packages+="
+$(< ~/.dotfiles/osx)"
         ;;
     Linux)
-        all_packages+="\n$(< ~/.dotfiles/arch)"
+        all_packages+="
+$(< ~/.dotfiles/arch)"
         ;;
 esac
 
