@@ -1,0 +1,4 @@
+import = [
+    "~/.config/alacritty/skeletony007.toml",
+    "~/.config/alacritty/colors.toml",
+]

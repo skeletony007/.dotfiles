@@ -1,0 +1,22 @@
+[init]
+    defaultBranch = master
+
+[user]
+    name = skeletony007
+    email = skeletony007@users.noreply.github.com
+    signingkey = 829F76B3DE9690EC
+[commit]
+    gpgsign = true
+[credential]
+    helper = manager
+    credentialStore = gpg
+
+[branch]
+    sort = -committerdate
+[column]
+    ui = auto
+
+[includeif "gitdir:~/personal/"]
+    path = ~/.config/git/config-personal
+[includeif "gitdir:~/work/"]
+    path = ~/.config/git/config-work

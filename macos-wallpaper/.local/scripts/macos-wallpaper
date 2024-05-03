@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+initial_space=$(yabai -m query --spaces --space | jq -r '.index')
+
+res=$(yabai -m query --spaces)
+echo "$res" | jq -c '.[]' | while read -r space; do
+    yabai -m space --focus "$(echo "$space" | jq -r '.index')"
+    wallpaper "$@"
+done
+
+yabai -m space --focus "$initial_space"

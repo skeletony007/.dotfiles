@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+all_packages="$(< ~/.dotfiles/common)"
+
+case "$(uname)" in
+    Darwin)
+        all_packages+="
+$(< ~/.dotfiles/osx)"
+        ;;
+    Linux)
+        all_packages+="
+$(< ~/.dotfiles/arch)"
+        ;;
+esac
+
+places=(
+    ~/personal/ansible-roles
+    ~/.dotfiles
+)
+
+for place in "${places[@]}"
+do
+    cd "$place" || exit 1
+
+    ./install <(printf '%s' "$all_packages") || exit 1
+done

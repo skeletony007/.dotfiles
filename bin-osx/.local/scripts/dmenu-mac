@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+xquartz_running=$(pgrep Xquartz)
+
+if [[ -z $xquartz_running ]]; then
+    /opt/X11/bin/Xquartz
+fi
+
+open -a Xquartz
+
+export DISPLAY=:0
+
+dmenu "$@"

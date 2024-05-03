@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+selected=$(sed "${1}q;d" ~/.config/tmux/tmux-quick-menu | sed "s#~#$HOME#" | sed 's#/$##')
+
+if [[ -d $selected ]]; then
+    ~/.local/scripts/tmux-sessionizer "$selected"
+fi
