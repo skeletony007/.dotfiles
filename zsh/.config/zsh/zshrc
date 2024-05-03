@@ -1,0 +1,31 @@
+#!usr/bin/env zsh
+
+# echo 'source $HOME/.config/zsh/zshrc' >> ~/.zshrc
+
+if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
+    exec startx
+fi
+
+if [ -z "$TMUX" ]; then
+    exec tmux new-session -A -s 'personal' -c "$HOME/personal"
+fi
+
+export XDG_CONFIG_HOME=$HOME/.config
+
+VIM='nvim'
+export VISUAL=$VIM
+export EDITOR=$VIM
+
+PERSONAL=$XDG_CONFIG_HOME/personal
+source $PERSONAL/env
+for i in $(find -L $PERSONAL); do
+    source $i
+done
+
+if [ -n "$TMUX" ]; then
+    tmux_sessionizer_widget() tmux-sessionizer
+    zle -N tmux_sessionizer_widget
+    bindkey ^f tmux_sessionizer_widget
+else
+    bindkey -s ^f 'tmux-sessionizer\n'
+fi

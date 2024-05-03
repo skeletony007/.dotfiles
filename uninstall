@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+while IFS= read -r package
+do
+    printf 'unstow %s\n' "$package"
+    stow --delete "$package"
+done < "$1"

@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+places=(
+    ~/personal/ansible-roles
+    ~/.dotfiles
+)
+
+for place in "${places[@]}"
+do
+    cd "$place" || exit 1
+
+    system="$(< ~/.dotfiles/common)"
+
+    case "$(uname)" in
+        Darwin)
+            system+="\n$(< ~/.dotfiles/osx)"
+            ;;
+        Linux)
+            system+="\n$(< ~/.dotfiles/arch)"
+            ;;
+    esac
+
+    ./install <(printf '%s' "$system") || exit 1
+done

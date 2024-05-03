@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+while IFS= read -r package
+do
+    printf 'stow %s\n' "$package"
+    stow --restow "$package"
+done < "$1"

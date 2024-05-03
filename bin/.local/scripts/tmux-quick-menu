@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+tmux popup -E '
+nvim -c "nnoremap q :q!<CR>" \
+    -c "nnoremap <Esc> :q!<CR>" \
+    -c "set nornu" \
+    -c "set signcolumn=no" \
+    ~/.config/tmux/tmux-quick-menu
+'

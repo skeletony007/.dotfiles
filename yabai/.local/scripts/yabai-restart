@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# TODO: sed 's/""/"/g' was a bug fix, is this still a bug?
+res=$(yabai -m query --spaces | sed 's/""/"/g')
+
+yabai --restart-service
+
+timeout=10
+interval=0.1
+elapsed=0
+
+while [[ -z $(pgrep yabai) ]]; do
+    (( elapsed >= timeout )) && exit 1
+    sleep $interval
+    ((elapsed += interval))
+done
+
+sleep $((elapsed + 1))
+
+echo $res | jq --compact-output '.[]' | while read -r space; do
+    index=$(echo "$space" | jq -r '.index')
+    label=$(echo "$space" | jq -r '.label')
+
+    yabai -m space "$index" --label "$label"
+done

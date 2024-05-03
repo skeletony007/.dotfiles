@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+# A simple script to add a LICENSE file to a project
+# see https://choosealicense.com/ for more license info
+#
+# author: skeletony007
+
+# OVERVIEW: 1. Download source from a url
+#           2. Extract license text using regex
+#           3. Perform custom logic to replace placeholders
+#           4. Define custom signature command
+#           5. Pipe license text through custom signature command
+#           6. Print license text to stdout (enclosed in BEGIN/END LICENSE)
+#           7. Write to LICENSE file in cwd
+
+# WARNING: This script is tailored to my workflow. Major assumptions are made,
+# and some are even marked with NOTE. Please review the script before
+# using it.
+
+# NOTE:
+# - author name is the same as the user name
+# - current year is the year of creation
+# - cwd basename name is the same as the program name
+
+# check if LICENSE file already exists
+if [ -e LICENSE ]; then
+    read -p "LICENSE file already exists. Overwrite? (y/n): " overwrite
+    if [[ $overwrite != "y" ]]; then
+        echo "aborted"
+        exit 1
+    fi
+fi
+
+license=$1
+# variables for each license, override as needed
+url=               # - url with license text source
+regex=.+           # - regex to match license text in source
+capture_group=0    # - capture group to use from regex (BASH_REMATCH)
+signature=cat      # - command to pipe matched text through
+
+# custom logic is required for each license source
+case $license in
+    mit) # MIT License
+        url='https://spdx.org/licenses/MIT.txt'
+
+        name=$(whoami)
+        year=$(date +%Y)
+
+        signature="
+        sed -e 's/<year>/$year/g' \
+            -e 's/<copyright holders>/$name/g'
+        "
+        ;;
+    gpl-3.0) # GNU General Public License v3.0
+        url='https://www.gnu.org/licenses/gpl-3.0.txt'
+        ## other: https://spdx.org/licenses/GPL-3.0.txt
+
+        name=$(whoami)
+        year=$(date +%Y)
+        program=$(basename "$(pwd)")
+        # NOTE: assume the user wants to provide a program description
+        read -p "Enter a description for $program: " desc
+
+        signature="
+        sed -e 's/<year>/$year/g' \
+            -e 's/<name of author>/$name/g' \
+            -e 's/<program>/$program/g' \
+            -e \"s/<one line to give the program's name and a brief idea of what it does.>/$desc/g\"
+        "
+        ;;
+    wtfpl-2) # Do What The F*ck You Want To Public License version 2
+        url='https://spdx.org/licenses/WTFPL.txt'
+        ;;
+    glwtpl) # Good Luck With That Public License
+        url='https://raw.githubusercontent.com/me-shaon/GLWTPL/HEAD/LICENSE'
+        ;;
+    glwtpl-2) # Good Luck With That Public License NSFW version
+        url='https://raw.githubusercontent.com/me-shaon/GLWTPL/HEAD/NSFW_LICENSE'
+        ;;
+    *)
+        ## TODO: Add more licenses
+        echo 'Usage: licence [mit|gpl-3.0|wtfpl|glwtpl|glwtpl-2]'
+        exit 1
+        ;;
+esac
+
+source=$(curl -s "$url")
+
+if [[ $source =~ $regex ]];
+then
+    license_text=$(
+        echo "${BASH_REMATCH[$capture_group]}" \
+            | eval "$signature" \
+            | fold -sw 80
+        )
+    printf 'BEGIN LICENSE\n%s\nEND LICENSE' "$license_text"
+    printf '%s' "$license_text" > LICENSE
+else
+    echo "license text not found at $url."
+    exit 1
+fi

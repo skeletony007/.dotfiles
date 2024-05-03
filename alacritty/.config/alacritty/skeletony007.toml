@@ -1,0 +1,35 @@
+[env]
+TERM = "screen-256color"
+
+[font]
+size = 24.0
+
+[window]
+decorations = "none"
+opacity = 0.9
+
+[window.padding]
+x = 8
+y = 8
+
+[font.bold]
+family = "UbuntuMono Nerd Font Mono"
+style = "Bold"
+
+[font.bold_italic]
+family = "UbuntuMono Nerd Font Mono"
+style = "Bold"
+
+[font.italic]
+family = "UbuntuMono Nerd Font Mono"
+style = "Regular"
+
+[font.normal]
+family = "UbuntuMono Nerd Font Mono"
+style = "Regular"
+
+[cursor.style]
+blinking = "Always"
+
+[mouse]
+hide_when_typing = true
