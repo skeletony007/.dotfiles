@@ -5,7 +5,7 @@ TERM = "screen-256color"
 size = 24.0
 
 [window]
-decorations = "none"
+decorations = "buttonless"
 opacity = 0.9
 
 [window.padding]
