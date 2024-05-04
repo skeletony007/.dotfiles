@@ -1,3 +1,5 @@
+env-arch
+gnome-keyring
 pacman
 xorg
 i3
