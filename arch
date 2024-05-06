@@ -1,6 +1,5 @@
 env-arch
 gnome-keyring
-pacman
 seahorse
 xorg
 i3
