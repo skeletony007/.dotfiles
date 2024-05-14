@@ -11,6 +11,13 @@ font pango:monospace 8
 # Remove borders
 default_border pixel 2
 
+# The combination of xss-lock, nm-applet and pactl is a popular choice, so
+# they are included here as an example. Modify as you see fit.
+
+# xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
+# screen before suspend. Use loginctl lock-session to lock your screen.
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock -c 000000 --nofork
+
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
@@ -146,8 +153,13 @@ bar {
         status_command i3status
 }
 
+# lock screen
+bindsym Control+$mod+s exec --no-startup-id systemctl suspend
+bindsym Control+$mod+l exec --no-startup-id loginctl lock-session
+
 # displays
 bindsym Control+$mod+1 move workspace to output primary
 bindsym Control+$mod+2 move workspace to output nonprimary
 
 bindsym Control+$mod+g exec --no-startup-id ~/.local/scripts/toggle-external-monitor
+bindsym Control+$mod+Shift+g exec --no-startup-id "xrandr --auto"
