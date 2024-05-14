@@ -1,0 +1,3 @@
+[submodule "damien-omen"]
+    path = "damien-omen"
+    url = "https://github.com/skeletony007/damien-omen-dotfiles.git"

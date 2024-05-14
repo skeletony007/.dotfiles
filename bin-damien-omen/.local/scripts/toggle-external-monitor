@@ -1,9 +1,0 @@
-#!/bin/sh
-intern=eDP-1
-extern=DP-2
-
-if xrandr | grep "$extern disconnected"; then
-    xrandr --output "$extern" --off --output "$intern" --mode 1920x1080 --rate 60
-else
-    xrandr --output "$intern" --off --output "$extern" --mode 2560x1440 --rate 120
-fi
