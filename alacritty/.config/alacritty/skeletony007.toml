@@ -2,7 +2,7 @@
 TERM = "screen-256color"
 
 [font]
-size = 16.0
+size = 24.0
 
 [window]
 decorations = "buttonless"
