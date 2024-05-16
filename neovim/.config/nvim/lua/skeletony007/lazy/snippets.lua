@@ -21,6 +21,8 @@ return {
             local cmp = require("cmp")
             local config = cmp.get_config()
             table.insert(config.sources, { name = "luasnip" })
+            config.snippet.expand = function(args) require("luasnip").lsp_expand(args.body) end
+
             cmp.setup(config)
         end,
     },
