@@ -1,5 +1,5 @@
 return {
     "j-hui/fidget.nvim",
 
-    config = function() end,
+    config = function() require("fidget").setup() end,
 }
