@@ -9,7 +9,6 @@ return {
         require("mason-tool-installer").setup({
             ensure_installed = {
                 "ansible-lint",
-                "vale",
             },
         })
 
@@ -30,24 +29,11 @@ return {
                 lint.linters.ansible_lint.args = { "-c", file, "-p", "--nocolor" }
                 return true
             end,
-            vale = function()
-                local file = vim.fn.findfile(".vale.ini", ".;")
-                if file == "" then
-                    return false
-                end
-                -- TODO: for some reason this doesn't work (fix this)
-                -- we can let vale search for the config file itself
-                -- - https://github.com/mfussenegger/nvim-lint/blob/HEAD/lua/lint/linters/vale.lua
-
-                --lint.linters.vale.args = { "--no-exit", "--output", "JSON", "--config", file }
-                return true
-            end,
         }
 
         -- Map of filetype to linters
         local linters_by_ft = {
             yaml = { "ansible_lint" },
-            markdown = { "vale" },
         }
 
         for ft, linters in pairs(linters_by_ft) do
@@ -60,23 +46,12 @@ return {
                         end
 
                         if linter_init[linter]() then
-                            local linters_ft = lint.linters_by_ft[ft] or {}
-                            if not vim.tbl_contains(linters_ft, linter) then
-                                table.insert(linters_ft, linter)
-                                lint.linters_by_ft[ft] = linters_ft
-                                vim.api.nvim_out_write('loaded linter "' .. linter .. '" for filetype "' .. ft .. '"\n')
-                            end
+                            lint.linters_by_ft[ft] = vim.tbl_extend("keep", lint.linters_by_ft[ft] or {}, { linter })
                         elseif lint.linters_by_ft[ft] then
-                            lint.linters_by_ft[ft] = vim.tbl_filter(function(entry)
-                                if entry == linter then
-                                    vim.api.nvim_out_write(
-                                        'unloaded linter "' .. linter .. '" for filetype "' .. ft .. '"\n'
-                                    )
-                                    return false
-                                else
-                                    return true
-                                end
-                            end, lint.linters_by_ft[ft])
+                            lint.linters_by_ft[ft] = vim.tbl_filter(
+                                function(entry) return entry ~= linter end,
+                                lint.linters_by_ft[ft]
+                            )
                         end
                     end,
                 })

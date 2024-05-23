@@ -10,7 +10,7 @@ function Color(color)
         panel_fg = vim.api.nvim_get_hl(0, { name = "Normal" }).fg,
     }
 
-    local overrides = {
+    local hl_overrides = {
         Normal = { bg = palette.base },
         NormalFloat = { link = "Normal" },
         StatusLine = { bg = palette.panel_bg, fg = palette.panel_fg },
@@ -23,13 +23,8 @@ function Color(color)
         DiagnosticSignOk = { bg = palette.base },
     }
 
-    local acc
-    for name, val in pairs(overrides) do
-        acc = vim.api.nvim_get_hl(0, { name = name }) or {}
-        for k, v in pairs(val) do
-            acc[k] = v
-        end
-        vim.api.nvim_set_hl(0, name, acc)
+    for name, val in pairs(hl_overrides) do
+        vim.api.nvim_set_hl(0, name, vim.tbl_extend("force", vim.api.nvim_get_hl(0, { name = name }) or {}, val))
     end
 end
 
@@ -72,8 +67,8 @@ local plugins = {
     },
     {
         "rose-pine/neovim",
-
-        version = "v1.2.2", -- latest version without fancy bracket highlighting
+        -- latest version without fancy bracket highlighting
+        version = "v1.2.2",
 
         pin = true,
 
@@ -88,23 +83,14 @@ local plugins = {
     },
 }
 
-local new_plugins = {}
 for i, plugin in ipairs(plugins) do
-    local plugin_template = {
-        priority = plugin.priority or 1000,
-        lazy = plugin.name ~= default_color,
-        pin = plugin.name ~= default_color,
+    local is_default_color = plugin.name == default_color
+    plugins[i] = vim.tbl_extend("keep", plugin, {
+        priority = 1000,
+        lazy = not is_default_color,
+        pin = not is_default_color,
         config = function() Color(plugin.name) end,
-    }
-
-    for k, v in pairs(plugin_template) do
-        if plugin[k] == nil then
-            -- NOTE: ignore warning here
-            plugin[k] = v
-        end
-    end
-
-    table.insert(new_plugins, i, plugin)
+    })
 end
 
-return new_plugins
+return plugins

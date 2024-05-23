@@ -7,12 +7,13 @@ return {
         require("nvim-treesitter.configs").setup({
             -- A list of parser names, or "all" (see https://github.com/nvim-treesitter/nvim-treesitter#supported-languages)
             ensure_installed = {
-                -- NOTE: cargo install tree-sitter-cli for parsers requireing
+                -- NOTE: cargo install tree-sitter-cli for parsers requiring
                 -- :TSInstallFromGrammar such as latex
                 "bash",
                 "vimdoc",
                 "lua",
                 "markdown",
+                "markdown_inline",
                 "python",
                 "javascript",
                 "typescript",
