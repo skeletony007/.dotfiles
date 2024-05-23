@@ -77,7 +77,7 @@ return {
         }
 
         for ft, formatters in pairs(formatters_by_ft) do
-            for _, formatter in ipairs(formatters) do
+            for _, formatter in pairs(formatters) do
                 vim.api.nvim_create_autocmd("BufWinEnter", {
                     group = skeletony_conform,
                     callback = function()
@@ -86,25 +86,13 @@ return {
                         end
 
                         if formatter_init[formatter]() then
-                            local formaters_ft = conform.formatters_by_ft[ft] or {}
-                            if not vim.tbl_contains(formaters_ft, formatter) then
-                                table.insert(formaters_ft, formatter)
-                                conform.formatters_by_ft[ft] = formaters_ft
-                                vim.api.nvim_out_write(
-                                    'loaded formatter "' .. formatter .. '" for filetype "' .. ft .. '"\n'
-                                )
-                            end
+                            conform.formatters_by_ft[ft] =
+                                vim.tbl_extend("keep", conform.formatters_by_ft[ft] or {}, { formatter })
                         elseif conform.formatters_by_ft[ft] then
-                            conform.formatters_by_ft[ft] = vim.tbl_filter(function(entry)
-                                if entry == formatter then
-                                    vim.api.nvim_out_write(
-                                        'unloaded formatter "' .. formatter .. '" for filetype "' .. ft .. '"\n'
-                                    )
-                                    return false
-                                else
-                                    return true
-                                end
-                            end, conform.formatters_by_ft[ft])
+                            conform.formatters_by_ft[ft] = vim.tbl_filter(
+                                function(entry) return entry ~= formatter end,
+                                conform.formatters_by_ft[ft]
+                            )
                         end
                     end,
                 })
