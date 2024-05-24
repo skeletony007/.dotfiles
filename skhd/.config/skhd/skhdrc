@@ -3,7 +3,7 @@
 # cmd - space
 
 # start a terminal
-cmd - return : alacritty
+cmd - return : alacritty --option 'window.decorations="none"'
 
 # start dmenu-desktop-mac (a program launcher)
 cmd - d : ~/.local/scripts/dmenu-desktop-mac
