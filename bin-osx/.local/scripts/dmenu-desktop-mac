@@ -22,7 +22,7 @@ case "$selected" in
         firefox
         ;;
     Alacritty)
-        alacritty
+        alacritty --option 'window.decorations="none"'
         ;;
     *)
         open -a "$selected"
@@ -37,7 +37,7 @@ elapsed=0
 
 while [[ $(yabai -m query --windows --window | jq -r '.app') != $selected ]]
 do
-    (( elapsed >= timeout )) && exit 1
+    ((elapsed >= timeout)) && exit 1
     sleep $interval
     ((elapsed += interval))
 done
