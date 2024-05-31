@@ -20,7 +20,7 @@
 # NOTE:
 # - author name is the same as the user name
 # - current year is the year of creation
-# - cwd basename name is the same as the program name
+# - cwd basename is the program name
 
 # check if LICENSE file already exists
 if [ -e LICENSE ]; then
