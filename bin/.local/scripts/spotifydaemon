@@ -3,14 +3,17 @@
 username='nklkbdy9s6dkcu9ykob8oxzuh'
 password=$(pass "personal/spotify.com/$username" | head -n 1)
 
-librespot --disable-audio-cache \
-          --disable-credential-cache \
-          --name "$(hostname)" \
-          --device-type computer \
-          --bitrate 320 \
-          --username "$username" \
-          --password "$password" \
-          --disable-discovery \
-          --format F32 \
-          --initial-volume 100 \
-          --disable-gapless
+args="--disable-audio-cache \
+      --disable-credential-cache \
+      --name "$(hostname)" \
+      --device-type computer \
+      --bitrate 320 \
+      --username "$username" \
+      --password "$password" \
+      --format F32 \
+      --initial-volume 100 \
+      --disable-gapless"
+
+pkill -a librespot
+
+nohup librespot $args $@ > /dev/null &
