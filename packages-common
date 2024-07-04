@@ -1,5 +1,6 @@
 gnupg
 pass
+pass-otp
 git
 git-credential-manager
 zsh

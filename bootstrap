@@ -1,26 +1,14 @@
 #!/usr/bin/env bash
 
-all_packages="$(< ~/.dotfiles/common)"
+[[ $(ansible localhost -m setup -a 'filter=ansible_os_family') =~ ansible_os_family\":\ \"([^\"]+)\" ]] || exit 1
+all_packages="${BASH_REMATCH[1]}
+$(< "$HOME/.dotfiles/packages-common")
+$(< "$HOME/.dotfiles/packages-${BASH_REMATCH[1]}")"
 
-case "$(uname)" in
-    Darwin)
-        all_packages+="
-$(< ~/.dotfiles/osx)"
-        ;;
-    Linux)
-        all_packages+="
-$(< ~/.dotfiles/arch)"
-        ;;
-esac
+places=("$HOME/personal/ansible-roles" "$HOME/.dotfiles")
 
-places=(
-    ~/personal/ansible-roles
-    ~/.dotfiles
-)
-
-for place in "${places[@]}"
-do
+for place in "${places[@]}"; do
     cd "$place" || exit 1
 
-    ./install <(printf '%s' "$all_packages") || exit 1
+    ./install <(printf "$all_packages") || exit 1
 done
