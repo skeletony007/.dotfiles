@@ -1,7 +1,5 @@
 #!usr/bin/env zsh
 
-# echo 'source $HOME/.config/zsh/zshrc' >> ~/.zshrc
-
 if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
     exec startx
 fi
@@ -15,6 +13,7 @@ export XDG_CONFIG_HOME=$HOME/.config
 VIM='nvim'
 export VISUAL=$VIM
 export EDITOR=$VIM
+export MANPAGER="$VIM +Man!"
 
 PERSONAL=$XDG_CONFIG_HOME/personal
 source $PERSONAL/env
