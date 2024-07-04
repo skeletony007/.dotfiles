@@ -2,6 +2,10 @@
     path = "damien-omen"
     url = "https://github.com/skeletony007/.dotfiles-damien-omen.git"
 
+[submodule "icestorm"]
+    path = "icestorm"
+    url = "https://github.com/skeletony007/.dotfiles-icestorm.git"
+
 [submodule "uol"]
     path = "uol"
     url = "https://github.com/skeletony007/.dotfiles-uol.git"
