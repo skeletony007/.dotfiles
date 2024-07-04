@@ -104,6 +104,8 @@ alt - r ; resize
 ctrl + cmd - 1 : yabai -m space --display 1
 ctrl + cmd - 2 : yabai -m space --display 2
 
+ctrl + cmd - g : ~/.local/scripts/auto-av
+
 # passmenu
 cmd - p : ~/.local/scripts/passmenu-mac
 
