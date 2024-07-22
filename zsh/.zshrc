@@ -1,18 +1,32 @@
 #!usr/bin/env zsh
 
-export ZSH="$HOME/.oh-my-zsh"
+if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
+    exec startx
+fi
 
-ZSH_THEME='robbyrussell'
+if [ -z "$TMUX" ]; then
+    exec tmux new-session -A -s personal -c "$HOME/personal"
+fi
 
-plugins=(
-    zsh-autosuggestions
-    git
-    pass
-)
+export XDG_CONFIG_HOME=$HOME/.config
 
-source "$ZSH/oh-my-zsh.sh"
+add_to_path() {
+    if [[ "$PATH" != *"$1"* ]]; then
+        export PATH=$PATH:$1
+    fi
+}
 
-bindkey '^[[1;3C' forward-word # alt + right
-bindkey ^y forward-char
+add_to_path_front() {
+    if [[ "$PATH" != *"$1"* ]]; then
+        export PATH=$1:$PATH
+    fi
+}
 
-source "$HOME/.config/zsh/zshrc"
+PERSONAL=$XDG_CONFIG_HOME/personal
+
+if [ -d "$PERSONAL" ]; then
+    for f in "$PERSONAL"/env* "$PERSONAL"/paths* "$PERSONAL"/alias*; do
+        [ -x "$f" ] && . "$f"
+    done
+    unset f
+fi

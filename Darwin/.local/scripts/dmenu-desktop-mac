@@ -21,9 +21,6 @@ case "$selected" in
     Firefox)
         firefox
         ;;
-    Alacritty)
-        alacritty --option 'window.decorations="none"'
-        ;;
     *)
         open -a "$selected"
         ;;

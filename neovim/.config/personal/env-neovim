@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+
+VIM='nvim'
+export VISUAL=$VIM
+export EDITOR=$VIM
+export MANPAGER="$VIM +Man!"
