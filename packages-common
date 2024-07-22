@@ -5,7 +5,6 @@ git
 git-credential-manager
 zsh
 bin
-env
 python
 rust
 node
