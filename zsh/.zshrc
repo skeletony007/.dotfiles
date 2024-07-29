@@ -30,3 +30,6 @@ if [ -d "$PERSONAL" ]; then
     done
     unset f
 fi
+
+export PERSONAL=$HOME/personal
+export WORK=$HOME/work
