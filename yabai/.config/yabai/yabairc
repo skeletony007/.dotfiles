@@ -11,6 +11,7 @@
 # Scripting addition requres disable [SIP].
 #
 # [SIP]: github.com/koekeishiya/yabai/wiki/Disabling-System-Integrity-Protection
+# [Apple Disable SIP]: https://developer.apple.com/documentation/security/disabling_and_enabling_system_integrity_protection
 #
 
 # load scripting additions
@@ -19,10 +20,10 @@ sudo yabai --load-sa
 
 yabai -m config                                 \
     layout                       bsp            \
-    mouse_follows_mouse          on             \
+    mouse_follows_focus          off            \
     window_shadow                off            \
     window_gap                   06             \
-    focus_follows_mouse          on             \
+    focus_follows_mouse          autoraise      \
     mouse_modifier               alt            \
                                                                                                    
 # configure spaces
