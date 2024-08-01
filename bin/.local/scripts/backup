@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+
+from datetime import datetime
+from os.path import isdir, normpath, splitext
+from shutil import copyfileobj, copytree
+from sys import argv
+
+from genericpath import isdir, isfile
+
+print("New files and directories:")
+for path in argv[1 : len(argv)]:
+    src_path = normpath(path)
+    path_ext = splitext(src_path)
+    dst_path = (
+        path_ext[0]
+        + datetime.now().strftime("-backup-%d-%m-%Y_%H.%M.%S.%f")[0:30]
+        + path_ext[1]
+    )
+
+    if isdir(src_path):
+        print("  directory " + dst_path)
+        copytree(src_path, dst_path)
+
+    if isfile(src_path):
+        print("  file      " + dst_path)
+        src_file = open(src_path, "rb")
+        dest_file = open(dst_path, "wb")
+        copyfileobj(src_file, dest_file)
