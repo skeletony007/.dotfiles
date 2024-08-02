@@ -23,8 +23,8 @@ function Color(color)
         DiagnosticSignOk = { bg = palette.base },
     }
 
-    for name, val in pairs(hl_overrides) do
-        vim.api.nvim_set_hl(0, name, vim.tbl_extend("force", vim.api.nvim_get_hl(0, { name = name }) or {}, val))
+    for k, v in pairs(hl_overrides) do
+        vim.api.nvim_set_hl(0, k, vim.tbl_extend("force", vim.api.nvim_get_hl(0, { name = k }) or {}, v))
     end
 end
 
