@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-while IFS= read -r package; do
+prog='{for(i=1;i<=NF;i++) if(!seen[$i]++) print $i}'
+
+for package in $(awk "$prog" "$@"); do
     printf 'unstow %s\n' "$package"
     stow --delete "$package"
-done < "$1"
+done
