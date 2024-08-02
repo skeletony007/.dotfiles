@@ -5,5 +5,5 @@ return {
         "williamboman/mason.nvim",
     },
 
-    config = true,
+    config = function() require("mason-tool-installer").setup(_G.personal.mason_tool_installer.setup) end,
 }

@@ -6,56 +6,28 @@ return {
     },
 
     config = function()
-        require("mason-tool-installer").setup({
-            ensure_installed = {
-                "ansible-lint",
-            },
-        })
-
         local lint = require("lint")
         lint.linters_by_ft = {}
         local skeletony_lint = vim.api.nvim_create_augroup("skeletony-lint", {})
 
-        -- Map of linters to their init functions
-        local linter_init = {
-            -- functions return true if the linter should be used and
-            -- false otherwise
-            ansible_lint = function()
-                local file = vim.fn.findfile(".ansible-lint", ".;")
-                if file == "" then
-                    return false
-                end
-                -- https://github.com/mfussenegger/nvim-lint/blob/HEAD/lua/lint/linters/ansible_lint.lua
-                lint.linters.ansible_lint.args = { "-c", file, "-p", "--nocolor" }
-                return true
-            end,
-        }
-
-        -- Map of filetype to linters
-        local linters_by_ft = {
-            yaml = { "ansible_lint" },
-        }
-
-        for ft, linters in pairs(linters_by_ft) do
-            for _, linter in ipairs(linters) do
-                vim.api.nvim_create_autocmd("BufWinEnter", {
-                    group = skeletony_lint,
-                    callback = function()
-                        if vim.bo.filetype ~= ft then
-                            return
-                        end
-
-                        if linter_init[linter]() then
-                            lint.linters_by_ft[ft] = vim.tbl_extend("keep", lint.linters_by_ft[ft] or {}, { linter })
+        for ft, linters in pairs(_G.personal.linters_by_ft) do
+            vim.api.nvim_create_autocmd("FileType", {
+                group = skeletony_lint,
+                pattern = ft,
+                callback = function()
+                    for _, linter in ipairs(linters) do
+                        if _G.personal.linter_init[linter]() then
+                            lint.linters_by_ft[ft] =
+                                _G.personal.merge_table_recursive(lint.linters_by_ft[ft] or {}, { linter })
                         elseif lint.linters_by_ft[ft] then
                             lint.linters_by_ft[ft] = vim.tbl_filter(
                                 function(entry) return entry ~= linter end,
                                 lint.linters_by_ft[ft]
                             )
                         end
-                    end,
-                })
-            end
+                    end
+                end,
+            })
         end
 
         vim.api.nvim_create_autocmd("BufWritePost", {
