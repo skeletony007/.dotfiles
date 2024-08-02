@@ -6,7 +6,7 @@ if [[ -z $xquartz_running ]]; then
     /opt/X11/bin/Xquartz
 fi
 
-open -a Xquartz
+open -ja Xquartz
 
 export DISPLAY=:0
 
