@@ -1,8 +1,22 @@
 #!/usr/bin/env bash
 
-prog='{for(i=1;i<=NF;i++) if(!seen[$i]++) print $i}'
+declare -a nap=()
+declare -a seen=()
 
-for package in $(awk "$prog" "$@"); do
-    printf 'unstow %s\n' "$package"
-    stow --delete "$package"
+for package in $(for file in "$@"; do xargs <"$file"; done); do
+    if [[ " ${seen[*]} " =~ " $package " ]]; then
+        continue
+    fi
+
+    seen+=("$package")
+    if [ -d "$package" ]; then
+        printf 'unstow %s\n' "$package"
+        stow --delete "$package"
+    else
+        nap+=("$package")
+    fi
+done
+
+for package in "${nap[@]}"; do
+    printf 'stow: %s is not a package\n' "$package"
 done
