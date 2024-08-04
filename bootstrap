@@ -2,13 +2,9 @@
 
 [[ $(ansible localhost -m setup -a 'filter=ansible_os_family') =~ ansible_os_family\":\ \"([^\"]+)\" ]] || exit 1
 all_packages="${BASH_REMATCH[1]}
-$(< "$HOME/.dotfiles/packages-common")
-$(< "$HOME/.dotfiles/packages-${BASH_REMATCH[1]}")"
+$(<"$HOME/.dotfiles/packages-common")
+$(<"$HOME/.dotfiles/packages-${BASH_REMATCH[1]}")"
 
-places=("$HOME/personal/ansible-roles" "$HOME/.dotfiles")
-
-for place in "${places[@]}"; do
-    cd "$place" || exit 1
-
-    ./install <(printf "$all_packages") || exit 1
+for place in "$HOME/personal/ansible-roles" "$HOME/.dotfiles"; do
+    cd "$place" && ./install <(printf "$all_packages") || exit 1
 done
