@@ -1,21 +1,13 @@
 gnupg
-pass
-pass-otp
-git
-git-credential-manager
-zsh
+pass pass-otp
+git git-credential-manager
+zsh oh-my-zsh
 bin
-python
-rust
-node
-dotnet
-java
+openssh
 tmux
 fzf
 neovim
-nerd-fonts
-oh-my-zsh
-alacritty
-firefox
-openssh
+librespot
+alacritty nerd-fonts
 dmenu
+firefox

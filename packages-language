@@ -1,0 +1,11 @@
+bash bashls shfmt
+python pyright isort black
+zsh
+lua lua-ls stylua
+rust rust-analyzer
+node tsserver prettier
+java jdtls meaven
+dotnet omnisharp
+latex texlive texlab
+ansible ansible-lint
+markdown marksman prettier
