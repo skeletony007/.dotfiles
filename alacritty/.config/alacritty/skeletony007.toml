@@ -2,7 +2,7 @@
 TERM = "screen-256color"
 
 [font]
-size = 24.0
+size = 16.0
 
 [window]
 opacity = 0.9
