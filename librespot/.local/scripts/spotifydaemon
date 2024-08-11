@@ -5,7 +5,7 @@ password=$(pass "personal/spotify.com/$username" | head -n 1)
 
 args="--disable-audio-cache \
       --disable-credential-cache \
-      --name "$(hostname)" \
+      --name "${USER}@${HOSTNAME}" \
       --device-type computer \
       --bitrate 320 \
       --username "$username" \
@@ -14,6 +14,4 @@ args="--disable-audio-cache \
       --initial-volume 100 \
       --disable-gapless"
 
-pkill -a librespot
-
-nohup librespot $args $@ > /dev/null &
+librespot $args $@
