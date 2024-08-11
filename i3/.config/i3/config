@@ -150,5 +150,5 @@ bindsym Control+$mod+l exec --no-startup-id loginctl lock-session
 bindsym Control+$mod+1 move workspace to output primary
 bindsym Control+$mod+2 move workspace to output nonprimary
 
-bindsym Control+$mod+g exec --no-startup-id ~/.local/scripts/toggle-external-monitor
+bindsym Control+$mod+g exec --no-startup-id ~/.local/scripts/auto-av
 bindsym Control+$mod+Shift+g exec --no-startup-id "xrandr --auto"
