@@ -1,6 +1,10 @@
+ineutils
 gnome-keyring
 seahorse
 xorg
+xss-lock
 i3
 pipewire
 wireplumber
+android-file-transfer
+feh
