@@ -1,3 +1,7 @@
+[submodule "openssh"]
+    path = "openssh"
+    url = "https://github.com/skeletony007/.dotfiles-openssh.git"
+
 [submodule "damien-omen"]
     path = "damien-omen"
     url = "https://github.com/skeletony007/.dotfiles-damien-omen.git"
