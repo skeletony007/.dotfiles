@@ -20,8 +20,18 @@ vim.keymap.set("i", "<C-c>", "<Esc>")
 vim.keymap.set("n", "<C-f>", "<cmd>silent ![[ -n $TMUX ]] && tmux-sessionizer<CR>")
 vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 
-vim.keymap.set("n", "[q", "<cmd>cnext<CR>zz")
-vim.keymap.set("n", "]q", "<cmd>cprev<CR>zz")
+vim.keymap.set("n", "]q", function()
+    if not pcall(vim.cmd.cnext) then
+        vim.cmd.cfirst()
+    end
+    vim.cmd("normal! zz")
+end)
+vim.keymap.set("n", "[q", function()
+    if not pcall(vim.cmd.cprevious) then
+        vim.cmd.clast()
+    end
+    vim.cmd("normal! zz")
+end)
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set("n", "<leader>x", function() -- chmod +x toggler
