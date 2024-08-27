@@ -13,6 +13,6 @@ return {
 
         vim.keymap.set("n", "]t", function() trouble.next({ skip_groups = true, jump = true }) end)
 
-        vim.keymap.set("n", "[t", function() trouble.previous({ skip_groups = true, jump = true }) end)
+        vim.keymap.set("n", "[t", function() trouble.prev({ skip_groups = true, jump = true }) end)
     end,
 }
