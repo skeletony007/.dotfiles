@@ -35,6 +35,8 @@ return {
             callback = function() lint.try_lint() end,
         })
 
+        vim.api.nvim_create_user_command("Lint", function() lint.try_lint() end, {})
+
         vim.api.nvim_create_user_command("LintInfo", function()
             local linters = lint.linters_by_ft[vim.bo.filetype] or {}
             if #linters == 0 then
