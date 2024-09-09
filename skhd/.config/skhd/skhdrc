@@ -3,7 +3,7 @@
 # cmd - space
 
 # start a terminal
-cmd - return : ~/.cargo/bin/alacritty --option 'window.decorations="none"'
+cmd - return : ~/.cargo/bin/alacritty --option 'window.decorations="none"' --option 'font.size=24.0'
 
 # start dmenu-desktop-mac (a program launcher)
 cmd - d : ~/.local/scripts/dmenu-desktop-mac
