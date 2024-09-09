@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+PATH="$HOME/.local/scripts:$PATH"
+
 if [[ $# -eq 1 ]]; then
     selected=$1
 
@@ -8,21 +10,21 @@ if [[ $# -eq 1 ]]; then
     fi
 
     selected_name=$(basename "$selected" | tr . _)
-    
-    if ! tmux has-session -t "$selected_name" 2> /dev/null; then
+
+    if ! tmux has-session -t "$selected_name" 2>/dev/null; then
         tmux new-session -ds "$selected_name" -c "$selected"
     fi
-    
+
     exec tmux switch-client -t "$selected_name"
 fi
 
-~/.local/scripts/tmux-sessionizer "$(
-find $HOME $HOME/personal $HOME/work -mindepth 1 -maxdepth 1 -type d \
-    | fzf-tmux -p 80%,80% \
-    --header 'Find / Create a Tmux Session' \
-    --border-label 'Results' \
-    --preview-label 'Preview' \
-    --preview '
+tmux-sessionizer "$(
+    find $HOME $HOME/personal $HOME/work -mindepth 1 -maxdepth 1 -type d |
+        fzf-tmux -p 80%,80% \
+            --header 'Find / Create a Tmux Session' \
+            --border-label 'Results' \
+            --preview-label 'Preview' \
+            --preview '
         echo -e "\033[1mTmux Tree\033[0m"
         "$HOME/.local/scripts/tmux-tree" "$(basename {} | tr . _)"
         echo "\n\033[1mFile Tree\033[0m"
