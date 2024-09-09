@@ -1,8 +1,10 @@
 set newtab about:blank
 colourscheme dark
 set modeindicator false
+set smoothscroll true
 set editorcmd $HOME/.cargo/bin/alacritty --option 'window.decorations="none"' --option 'font.size=24.0' --command /usr/local/bin/nvim
 unbind --mode=normal <C-f>
 tgroupcreate main
-bind <space><C-d> fillcmdline tgroupswitch
-bind <space>a fillcmdline tgroupmove
+bind --mode=normal <C-s>D fillcmdline tgroupswitch
+bind --mode=normal <C-s>A fillcmdline tgroupmove
+bind --mode=normal <C-s>X tgroupclose
