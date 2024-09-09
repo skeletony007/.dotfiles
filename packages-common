@@ -1,12 +1,14 @@
 gnupg
-pass pass-otp
+pass pass-otp zbar
 git git-credential-manager
 zsh oh-my-zsh
+man-pages
 bin
 openssh
 tmux
 ripgrep
 fzf
+tree
 neovim
 librespot
 alacritty nerd-fonts
