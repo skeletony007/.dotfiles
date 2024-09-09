@@ -1,9 +1,9 @@
-bash bashls shfmt
+bash bash-language-server shfmt
 python pyright isort black
 zsh
-lua lua-ls stylua
+lua lua-language-server stylua
 rust rust-analyzer
-node tsserver prettier
+node typescript-language-server prettier
 java jdtls meaven
 dotnet omnisharp
 latex texlive texlab
