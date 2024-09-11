@@ -1,8 +1,5 @@
-local default_color = "kanagawa"
-
 function Color(color)
-    color = color or default_color
-    vim.cmd.colorscheme(color)
+    vim.cmd.colorscheme(color or "default")
 
     local palette = {
         base = "none",
@@ -28,69 +25,10 @@ function Color(color)
     end
 end
 
-local plugins = {
-    {
-        "folke/tokyonight.nvim",
+return {
+    "rebelot/kanagawa.nvim",
 
-        name = "tokyonight",
+    priority = 1000,
 
-        main = "tokyonight",
-
-        opts = {
-            style = "moon",
-            transparent = true,
-        },
-    },
-    {
-        "catppuccin/nvim",
-
-        name = "catppuccin",
-
-        main = "catppuccin",
-
-        opts = {
-            flavour = "frappe",
-            transparent_background = true,
-        },
-    },
-    {
-        "rebelot/kanagawa.nvim",
-
-        name = "kanagawa",
-
-        main = "kanagawa",
-
-        opts = {
-            theme = "wave",
-            transparent = true,
-        },
-    },
-    {
-        "rose-pine/neovim",
-        -- latest version without fancy bracket highlighting
-        version = "v1.2.2",
-
-        pin = true,
-
-        name = "rose-pine",
-
-        main = "rose-pine",
-
-        opts = {
-            variant = "moon",
-            disable_background = true,
-        },
-    },
+    config = function() Color("kanagawa-wave") end,
 }
-
-for i, plugin in ipairs(plugins) do
-    local is_default_color = plugin.name == default_color
-    plugins[i] = vim.tbl_extend("keep", plugin, {
-        priority = 1000,
-        lazy = not is_default_color,
-        pin = not is_default_color,
-        config = function() Color(plugin.name) end,
-    })
-end
-
-return plugins
