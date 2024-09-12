@@ -3,7 +3,7 @@
 declare -a nap=()
 declare -a seen=()
 
-for package in $(for file in "$@"; do xargs <"$file"; done); do
+for package in $@; do
     if [[ " ${seen[*]} " =~ " $package " ]]; then
         continue
     fi

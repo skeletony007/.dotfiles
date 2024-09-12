@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
-[[ $(ansible localhost -m setup -a 'filter=ansible_os_family') =~ ansible_os_family\":\ \"([^\"]+)\" ]] || exit 1
-all_packages="${BASH_REMATCH[1]}
-$(<"$HOME/.dotfiles/packages-common")
-$(<"$HOME/.dotfiles/packages-${BASH_REMATCH[1]}")"
+all_packages=$@
+
+if [[ $# -eq 0 ]]; then
+    [[ $(ansible localhost -m setup -a 'filter=ansible_os_family') =~ ansible_os_family\":\ \"([^\"]+)\" ]] || exit 1
+    all_packages="${BASH_REMATCH[1]}
+    $(<"$HOME/.dotfiles/packages-common")
+    $(<"$HOME/.dotfiles/packages-${BASH_REMATCH[1]}")"
+fi
 
 for place in "$HOME/personal/ansible-roles" "$HOME/.dotfiles"; do
-    cd "$place" && ./install <(printf "$all_packages") || exit 1
+    cd "$place" && ./install "$all_packages" || exit 1
 done
