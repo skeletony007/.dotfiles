@@ -15,8 +15,6 @@ vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 
-vim.keymap.set("i", "<C-c>", "<Esc>")
-
 vim.keymap.set("n", "<C-f>", "<cmd>silent ![[ -n $TMUX ]] && tmux-sessionizer<CR>")
 vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 
@@ -34,19 +32,12 @@ vim.keymap.set("n", "[q", function()
 end)
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
-vim.keymap.set("n", "<leader>x", function() -- chmod +x toggler
-    local file_path = vim.fn.expand("%:p") -- Get the full path of the current file
-    local is_executable = vim.fn.executable(file_path) == 1
-    --  1  exists
-    --  0  does not exist
-    -- -1  not implemented on this system
+vim.keymap.set("n", "<leader>x", function()
+    local file_path = vim.fn.expand("%:p")
 
-    local command
-    if is_executable then
-        command = string.format("!chmod $((0666 - $(umask))) %s", file_path)
+    if vim.fn.executable(file_path) == 1 then
+        vim.cmd(string.format("!chmod $((0666 - $(umask))) %s", file_path))
     else
-        command = string.format("!chmod +x %s", file_path)
+        vim.cmd(string.format("!chmod +x %s", file_path))
     end
-
-    vim.cmd(command)
 end, { silent = true })
