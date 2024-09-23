@@ -25,7 +25,7 @@ add_to_path_front() {
 PERSONAL=$XDG_CONFIG_HOME/personal
 
 if [ -d "$PERSONAL" ]; then
-    for f in "$PERSONAL"/env* "$PERSONAL"/paths* "$PERSONAL"/alias*; do
+    for f in "$PERSONAL"/env-* "$PERSONAL"/paths-* "$PERSONAL"/alias-*; do
         [ -x "$f" ] && . "$f"
     done
     unset f
