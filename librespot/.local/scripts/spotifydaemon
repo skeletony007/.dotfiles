@@ -8,8 +8,8 @@ args="--disable-audio-cache \
       --name "${USER}@${HOSTNAME}" \
       --device-type computer \
       --bitrate 320 \
-      --username "$username" \
-      --password "$password" \
+      --username '$username' \
+      --password '$password' \
       --format F32 \
       --initial-volume 100 \
       --disable-gapless"
