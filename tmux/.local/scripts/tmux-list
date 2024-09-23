@@ -2,8 +2,4 @@
 
 PATH="$HOME/.local/scripts:$PATH"
 
-selected=$(sed "${1}q;d" ~/.config/tmux/tmux-quick-menu | sed "s#~#$HOME#" | sed 's#/$##')
-
-if [[ -d $selected ]]; then
-    tmux-sessionizer "$selected"
-fi
+tmux-sessionizer "$(sed "${1}q;d" "$HOME/.config/tmux/tmux-quick-menu")"

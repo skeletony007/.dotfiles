@@ -14,6 +14,3 @@ tmux ls -F'#{session_id}' | while read -r s; do
         echo "└─> ${W##$w}"
     done
 done
-
-# Session names cannot contain either `.` or `:`
-# https://unix.stackexchange.com/a/560874
