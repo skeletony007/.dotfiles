@@ -8,11 +8,11 @@ return {
     config = function()
         local conform = require("conform")
         conform.setup()
-        local skeletony_conform = vim.api.nvim_create_augroup("skeletony-conform", {})
+        local skeletony007_conform_group = vim.api.nvim_create_augroup("skeletony007ConformGroup", {})
 
         for ft, formatters in pairs(_G.personal.formatters_by_ft) do
             vim.api.nvim_create_autocmd("FileType", {
-                group = skeletony_conform,
+                group = skeletony007_conform_group,
                 pattern = ft,
                 callback = function()
                     for _, formatter in ipairs(formatters) do

@@ -5,15 +5,15 @@ _G.personal = require("skeletony007.personal")
 
 require("skeletony007.lazy_init")
 
-local skeletony_group = vim.api.nvim_create_augroup("skeletony-group", {})
+local skeletony007_group = vim.api.nvim_create_augroup("skeletony007Group", {})
 
 vim.api.nvim_create_autocmd("TextYankPost", {
-    group = skeletony_group,
+    group = skeletony007_group,
     callback = function() vim.highlight.on_yank() end,
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
-    group = skeletony_group,
+    group = skeletony007_group,
     callback = function(e)
         local opts = { buffer = e.buf }
         vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)

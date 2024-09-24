@@ -9,7 +9,7 @@ tmux
 ripgrep
 fzf
 tree
-neovim
+neovim tree-sitter-cli
 librespot
 alacritty nerd-fonts
 dmenu

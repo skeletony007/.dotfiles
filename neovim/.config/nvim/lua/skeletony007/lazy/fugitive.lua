@@ -4,10 +4,10 @@ return {
     config = function()
         vim.keymap.set("n", "<leader>gs", vim.cmd.Git)
 
-        local skeletony_fugitive = vim.api.nvim_create_augroup("skeletony-fugitive", {})
+        local skeletony007_fugitive_group = vim.api.nvim_create_augroup("skeletony007FugitiveGroup", {})
 
         vim.api.nvim_create_autocmd("BufWinEnter", {
-            group = skeletony_fugitive,
+            group = skeletony007_fugitive_group,
             callback = function()
                 if vim.bo.ft ~= "fugitive" then
                     return

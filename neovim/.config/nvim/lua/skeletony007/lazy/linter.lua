@@ -8,11 +8,11 @@ return {
     config = function()
         local lint = require("lint")
         lint.linters_by_ft = {}
-        local skeletony_lint = vim.api.nvim_create_augroup("skeletony-lint", {})
+        local skeletony007_lint_group = vim.api.nvim_create_augroup("skeletony007LintGroup", {})
 
         for ft, linters in pairs(_G.personal.linters_by_ft) do
             vim.api.nvim_create_autocmd("FileType", {
-                group = skeletony_lint,
+                group = skeletony007_lint_group,
                 pattern = ft,
                 callback = function()
                     for _, linter in ipairs(linters) do
@@ -31,7 +31,7 @@ return {
         end
 
         vim.api.nvim_create_autocmd("BufWritePost", {
-            group = skeletony_lint,
+            group = skeletony007_lint_group,
             callback = function() lint.try_lint() end,
         })
 
