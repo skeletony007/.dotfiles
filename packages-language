@@ -1,11 +1,12 @@
-bash bash-language-server shfmt
-python pyright isort black
-zsh
-lua lua-language-server stylua
-rust rust-analyzer
-node typescript-language-server prettier
-java jdtls meaven
-dotnet omnisharp
-latex texlive texlab
 ansible ansible-lint
+bash bash-language-server shfmt
+dotnet omnisharp
+java jdtls meaven
+latex texlive texlab
+lua lua-language-server stylua
 markdown marksman prettier
+node typescript-language-server prettier
+python pyright isort black
+rust rust-analyzer
+yaml prettier
+zsh
