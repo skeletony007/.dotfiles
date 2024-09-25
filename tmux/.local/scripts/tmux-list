@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-PATH="$HOME/.local/scripts:$PATH"
-
-tmux-sessionizer "$(sed "${1}q;d" "$HOME/.config/tmux/tmux-quick-menu")"
