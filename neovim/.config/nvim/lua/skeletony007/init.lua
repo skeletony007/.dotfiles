@@ -29,6 +29,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
+vim.api.nvim_create_autocmd("BufRead", {
+    group = skeletony007_group,
+    pattern = "*/pass.*/*",
+    callback = function()
+        vim.opt_local.swapfile = false
+        vim.opt_local.backup = false
+        vim.opt_local.undofile = false
+    end,
+})
+
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
