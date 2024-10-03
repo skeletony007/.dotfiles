@@ -3,7 +3,7 @@
 declare -a nap=()
 declare -a seen=()
 
-for package in $@; do
+for package in "$@"; do
     if [[ " ${seen[*]} " =~ " $package " ]]; then
         continue
     fi

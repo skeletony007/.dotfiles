@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
+if [ "$(git config core.sparseCheckout)" = 'true' ]; then
+    git sparse-checkout add "$@" --skip-checks
+fi
+
 declare -a nap=()
 declare -a seen=()
 
-for package in $@; do
+for package in "$@"; do
     if [[ " ${seen[*]} " =~ " $package " ]]; then
         continue
     fi
