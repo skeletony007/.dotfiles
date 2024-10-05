@@ -29,6 +29,19 @@ needed.
 ~/.dotfiles/bootstrap package ...
 ```
 
+> [!TIP]
+> Ignore tmux-quick-menu locally:
+>
+> ```
+> git update-index --assume-unchanged tmux/.config/tmux/tmux-quick-menu
+> ```
+>
+> Undo:
+>
+> ```
+> git update-index --no-assume-unchanged tmux/.config/tmux/tmux-quick-menu
+> ```
+
 ## Example: Install packages for a specific language
 
 ```
