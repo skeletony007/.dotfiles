@@ -20,7 +20,7 @@ return {
             -- add luasnip cmp source
             local cmp = require("cmp")
             local config = cmp.get_config()
-            table.insert(config.sources, { name = "luasnip" })
+            table.insert(config.sources, 2, { name = "luasnip" })
             config.snippet.expand = function(args) require("luasnip").lsp_expand(args.body) end
 
             cmp.setup(config)

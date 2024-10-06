@@ -15,8 +15,7 @@ vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 
-vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux-sessionizer<CR>")
-vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
+vim.keymap.set("n", "<C-f>", function() vim.system({ "tmux-sessionizer" }) end)
 
 vim.keymap.set("n", "]q", function()
     if not pcall(vim.cmd.cnext) then
@@ -34,10 +33,12 @@ end)
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set("n", "<leader>x", function()
     local file_path = vim.fn.expand("%:p")
-
-    if vim.fn.executable(file_path) == 1 then
-        vim.cmd(string.format("!chmod $((0666 - $(umask))) %s", file_path))
-    else
-        vim.cmd(string.format("!chmod +x %s", file_path))
-    end
-end, { silent = true })
+    local perm = (vim.fn.executable(file_path) == 1 and "-" or "+") .. "x"
+    vim.system({ "chmod", perm, file_path }, { text = true }, function(obj)
+        if obj.code == 0 then
+            print(string.format("Permissions changed to %s.", perm))
+        else
+            print(string.format("Failed to change permissions: %s", obj.stderr))
+        end
+    end)
+end)
