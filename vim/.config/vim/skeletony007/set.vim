@@ -1,16 +1,8 @@
-syntax on
+set nocompatible
+set laststatus=2
+set guicursor=
 
-set termguicolors
-
-colorscheme gruvbox
-set background=dark
-hi Normal guibg=NONE ctermbg=NONE
-
-let g:netrw_browse_split=0
-let g:netrw_banner=0
-let g:netrw_winsize=25
-
-set nu
+set number
 set relativenumber
 
 set tabstop=4
@@ -22,7 +14,7 @@ set smartindent
 
 set nowrap
 
-" prevent conflicts nvim
+" prevent conflicts Neovim
 set noswapfile
 set nobackup
 set undodir=
@@ -31,8 +23,11 @@ set noundofile
 set nohlsearch
 set incsearch
 
+set termguicolors
+
 set scrolloff=8
 set signcolumn=yes
+set isfname+=@-@
 
 set updatetime=50
 
