@@ -2,7 +2,7 @@
 
 Using [GNU Stow] and [Ansible].
 
-## Quick Start with Git Sparse Checkout
+## Quickstart with Git Sparse Checkout
 
 **GNU Stow dotfiles**
 
@@ -47,6 +47,8 @@ needed.
 ```
 ./install $(grep markdown packages-language)
 ```
+
+Read the [docs](/docs/stow-packages.md#stow-packages).
 
 [Ansible]: https://github.com/ansible/ansible
 [GNU Stow]: https://www.gnu.org/software/stow/
