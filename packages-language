@@ -8,5 +8,6 @@ markdown marksman prettier
 node typescript-language-server prettier
 python pyright isort black
 rust rust-analyzer
+sql mariadb vim-dadbod
 yaml prettier
 zsh
