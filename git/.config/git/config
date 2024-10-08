@@ -11,11 +11,6 @@
     helper = manager
     credentialStore = gpg
 
-[branch]
-    sort = -committerdate
-[column]
-    ui = auto
-
 [includeif "gitdir:~/personal/"]
     path = ~/.config/git/config-personal
 [includeif "gitdir:~/work/"]
