@@ -1,6 +1,6 @@
 return {
     s(
-        { trig = "---", desc = "yaml frontmatter" },
+        { trig = "---", desc = "Insert YAML frontmatter" },
         fmt(
             [[
             ---
