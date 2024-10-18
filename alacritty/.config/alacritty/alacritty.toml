@@ -1,4 +1,2 @@
-import = [
-    "~/.config/alacritty/skeletony007.toml",
-    "~/.config/alacritty/colors.toml",
-]
+[general]
+import = [ "skeletony007.toml", "colors.toml" ]
