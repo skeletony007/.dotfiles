@@ -3,6 +3,9 @@ augroup skeletony007ColorsGroup
 
   autocmd ColorScheme * highlight Normal guibg=NONE
   autocmd ColorScheme * highlight NormalFloat guibg=NONE
+  autocmd ColorScheme * highlight Visual guibg=#303030
+  autocmd ColorScheme * highlight Pmenu guibg=#303030
+  autocmd ColorScheme * highlight PmenuSel guibg=#4e4e4e
   autocmd ColorScheme * highlight StatusLine guibg=#ffffff guifg=#303030
   autocmd ColorScheme * highlight StatusLineNC guibg=#888888 guifg=#1c1c1c
   autocmd ColorScheme * highlight LineNr guibg=NONE
