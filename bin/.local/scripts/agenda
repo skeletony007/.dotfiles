@@ -4,7 +4,11 @@ import datetime
 import os
 import sys
 
-calendar_dir = os.path.join(
+BOLD = "\033[1m"
+GREY = "\033[90m"
+RESET = "\033[0m"
+
+CALENDAR_DIR = os.path.join(
     os.getenv("PERSONAL", os.path.expanduser("~")), "notes", "calendar"
 )
 
@@ -12,19 +16,23 @@ days = 7
 if len(sys.argv) == 2 and sys.argv[1].isdigit():
     days = int(sys.argv[1])
 
-print(f"Agenda for next {days} days\n======================\n")
+header = f"Agenda for next {days} days"
+print(f"{BOLD}{header}{RESET}\n{'=' * len(header)}\n")
 
 today = datetime.datetime.now().date()
-seven_days_later = today + datetime.timedelta(days=days)
 
-for note in sorted(os.listdir(calendar_dir)):
-    note_date = os.path.splitext(note)[0]
-
-    if len(note_date) == 8 and note_date.isdigit():
-        note_date_dt = datetime.datetime.strptime(note_date, "%Y%m%d").date()
-
-        if today <= note_date_dt <= seven_days_later:
-            print(f"{note_date}\n========\n")
-
-            with open(os.path.join(calendar_dir, note), "r") as file:
-                print(file.read())
+for day in range(days):
+    try:
+        day_dt = today + datetime.timedelta(days=day)
+        day_str = day_dt.strftime("%Y%m%d")
+        with open(os.path.join(CALENDAR_DIR, day_str + ".md"), "r") as file:
+            full_weekday_name = day_dt.strftime("%A")
+            if day_dt == today:
+                full_weekday_name += " (today)"
+            print(
+                f"{BOLD}{day_str}{RESET} {GREY}{full_weekday_name}{RESET}\n"
+                f"{'=' * len(f"{day_str} {full_weekday_name}")}\n\n"
+                f"{file.read()}"
+            )
+    except FileNotFoundError:
+        continue
