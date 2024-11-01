@@ -12,16 +12,16 @@ cd ~/.dotfiles
 git sparse-checkout set package ...
 ```
 
+The git sparse-checkout command can be used to grow the working directory as
+needed.
+
+The bespoke install script handles sparse-checkout add automatically.
+
 **Ansible Roles**
 
 ```
-git clone --depth=1 --single-branch --sparse https://github.com/skeletony007/ansible-roles.git ~/personal/ansible-roles
-cd ~/personal/ansible-roles
-git sparse-checkout set role ...
+git clone --depth=1 --single-branch https://github.com/skeletony007/ansible-roles.git ~/personal/ansible-roles
 ```
-
-The git-sparse-checkout command can be used to grow the working directory as
-needed.
 
 **Bespoke Bootstrap Script**
 
