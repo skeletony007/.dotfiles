@@ -9,11 +9,4 @@ fi
 
 xrdb ~/.Xresources
 
-# WARNING: This command grants any local user (sudo) access to your X screen
-# <https://wiki.archlinux.org/title/Xhost>
-xhost +SI:localuser:$USER &
-
-gnome-keyring-daemon --start --components=secrets &
-pipewire &
-wireplumber &
 exec i3
