@@ -7,7 +7,7 @@ Using [GNU Stow] and [Ansible].
 **GNU Stow dotfiles**
 
 ```
-git clone --depth=1 --single-branch --sparse https://github.com/skeletony007/.dotfiles.git ~/.dotfiles
+git clone --depth=1 --single-branch --sparse git@github.com:skeletony007/.dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 git sparse-checkout set package ...
 ```
@@ -20,7 +20,7 @@ The bespoke install script handles sparse-checkout add automatically.
 **Ansible Roles**
 
 ```
-git clone --depth=1 --single-branch https://github.com/skeletony007/ansible-roles.git ~/personal/ansible-roles
+git clone --depth=1 --single-branch git@github.com:skeletony007/ansible-roles.git ~/personal/ansible-roles
 ```
 
 **Bespoke Bootstrap Script**
