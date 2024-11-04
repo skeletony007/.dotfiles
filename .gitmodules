@@ -1,15 +1,15 @@
 [submodule "openssh"]
     path = "openssh"
-    url = "https://github.com/skeletony007/.dotfiles-openssh.git"
+    url = "git@github.com:skeletony007/.dotfiles-openssh.git"
 
 [submodule "damien-omen"]
     path = "damien-omen"
-    url = "https://github.com/skeletony007/.dotfiles-damien-omen.git"
+    url = "git@github.com:skeletony007/.dotfiles-damien-omen.git"
 
 [submodule "icestorm"]
     path = "icestorm"
-    url = "https://github.com/skeletony007/.dotfiles-icestorm.git"
+    url = "git@github.com:skeletony007/.dotfiles-icestorm.git"
 
 [submodule "uol"]
     path = "uol"
-    url = "https://github.com/skeletony007/.dotfiles-uol.git"
+    url = "git@github.com:skeletony007/.dotfiles-uol.git"
