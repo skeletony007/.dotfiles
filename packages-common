@@ -1,17 +1,19 @@
+openssh
 gnupg
+git
 pass pass-otp zbar
-git git-credential-manager
 zsh oh-my-zsh
 man-pages
 bin
-openssh
-tmux
+less
+watch
+tree
 ripgrep
 fzf
-tree
+tmux
 neovim tree-sitter-cli
-librespot
 alacritty nerd-fonts-ubuntu-mono
 dmenu
 firefox
 chromium
+librespot
