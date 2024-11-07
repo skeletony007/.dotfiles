@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+# Socket file created by gcr-ssh-agent.socket systemd user unit
+export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
