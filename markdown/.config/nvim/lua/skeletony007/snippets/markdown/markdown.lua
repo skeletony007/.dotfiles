@@ -11,17 +11,37 @@ return {
             {}
             ]],
             {
-                i(
-                    1,
-                    (function()
-                        local file_name = vim.fn.expand("%:t:r")
-                        if file_name == "" then
-                            return "title"
-                        else
-                            return file_name
+                c(1, {
+                    i(
+                        nil,
+                        (function()
+                            local file_name = vim.fn.expand("%:t:r")
+                            if file_name == "" then
+                                return "title"
+                            else
+                                return file_name
+                            end
+                        end)()
+                    ),
+                    f(function()
+                        for i = 1, 6, 1 do
+                            local query = string.format("H%s:", i)
+                            local result = vim.lsp.buf_request_sync(0, "workspace/symbol", { query = query })
+                            if result then
+                                for _, server_response in pairs(result) do
+                                    for _, item in ipairs(server_response.result) do
+                                        if item.kind == 15 and item.location.uri == vim.uri_from_bufnr(0) then
+                                            local header_name = item.name:match(string.format("%s (.+)", query))
+                                            if header_name then
+                                                return header_name
+                                            end
+                                        end
+                                    end
+                                end
+                            end
                         end
-                    end)()
-                ),
+                    end, {}),
+                }),
                 f(function() return os.date("%Y-%m-%d %H:%M:%S %z") end, {}),
                 f(function()
                     local tag_freq = {}
