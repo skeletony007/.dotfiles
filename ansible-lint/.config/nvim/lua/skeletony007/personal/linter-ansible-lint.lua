@@ -18,8 +18,9 @@ return {
             if file == "" then
                 return false
             end
+            local full_path = vim.fn.fnamemodify(file, ":p")
             -- https://github.com/mfussenegger/nvim-lint/blob/HEAD/lua/lint/linters/ansible_lint.lua
-            require("lint").linters.ansible_lint.args = { "-c", file, "-p", "--nocolor" }
+            require("lint").linters.ansible_lint.args = { "-c", full_path, "-p", "--nocolor" }
             return true
         end,
     },

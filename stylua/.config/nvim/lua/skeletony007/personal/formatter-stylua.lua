@@ -15,11 +15,15 @@ return {
         -- false otherwise
         stylua = function()
             local file = vim.fn.findfile(".stylua.toml", ".;")
-            if file ~= "" then
-                require("conform").formatters.stylua = { prepend_args = { "--config-path", file } }
-                return true
+            if file == "" then
+                return false
             end
-            return false
+            local full_path = vim.fn.fnamemodify(file, ":p")
+            require("conform").formatters.stylua = {
+                inherit = true,
+                prepend_args = { "--config-path", full_path },
+            }
+            return true
         end,
     },
 

@@ -33,7 +33,11 @@ return {
             for _, prettierrc in ipairs(prettierrcs) do
                 local file = vim.fn.findfile(prettierrc, ".;")
                 if file ~= "" then
-                    require("conform").formatters.prettier = { prepend_args = { "--config", file } }
+                    local full_path = vim.fn.fnamemodify(file, ":p")
+                    require("conform").formatters.prettier = {
+                        inherit = true,
+                        prepend_args = { "--config", full_path },
+                    }
                     return true
                 end
             end

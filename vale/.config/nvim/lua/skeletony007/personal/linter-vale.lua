@@ -18,6 +18,15 @@ return {
             if file == "" then
                 return false
             end
+            local full_path = vim.fn.fnamemodify(file, ":p")
+            -- https://github.com/mfussenegger/nvim-lint/blob/HEAD/lua/lint/linters/vale.lua
+            require('lint').linters.vale.args = {
+                "--config",
+                full_path,
+                '--no-exit',
+                '--output',
+                'JSON'
+            }
             return true
         end,
     },
