@@ -1,8 +1,7 @@
 require("skeletony007.remap")
 require("skeletony007.set")
 
-_G.personal = require("skeletony007.personal")
-
+require("skeletony007.personal_init")
 require("skeletony007.lazy_init")
 
 local skeletony007_group = vim.api.nvim_create_augroup("skeletony007Group", {})

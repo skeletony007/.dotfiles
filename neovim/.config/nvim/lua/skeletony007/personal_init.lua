@@ -29,7 +29,7 @@ end
 
 local dir_handle = vim.loop.fs_scandir(vim.fn.stdpath("config") .. "/lua/skeletony007/personal")
 for name, type in vim.loop.fs_scandir_next, dir_handle do
-    if (type == "file" or type == "link") and name:match("%.lua$") and (not name:match("init.lua$")) then
+    if (type == "file" or type == "link") and name:match("%.lua$") then
         local modname = "skeletony007.personal." .. name:gsub("%.lua$", "")
         local resource = require(modname)
         if resource.version == "0.0.1" then
@@ -37,5 +37,7 @@ for name, type in vim.loop.fs_scandir_next, dir_handle do
         end
     end
 end
+
+_G.personal = M
 
 return M
