@@ -1,25 +1,32 @@
 #!/usr/bin/env sh
 
+PATH="$HOME/.local/scripts:$PATH"
+EDITOR="${EDITOR:-vim}"
 NOTES_DIR=${PERSONAL-$HOME}/notes
 mkdir -p "$NOTES_DIR"
 
 case "$#" in
 0)
     mkdir -p "$NOTES_DIR/calendar"
-    note="$NOTES_DIR/calendar/$(date '+%Y%m%d')"
+    note "calendar/$(date '+%Y%m%d')"
     ;;
 *)
-    note="$NOTES_DIR/$*"
+    # Patterns begining with "git" as the first argument are considered Git commands
+    if [ "$1" == git ]; then
+        (
+            cd "$NOTES_DIR" && "$@"
+        )
+    else
+        (
+            cd "$NOTES_DIR" || exit 1
+            "$EDITOR" "$NOTES_DIR/$*.md"
+
+            if git diff --staged --quiet; then
+                echo 'No staged changes to commit.'
+            else
+                git commit -m "Update notes: $(date '+%Y-%m-%d %H:%M:%S %z')"
+            fi
+        )
+    fi
     ;;
 esac
-
-if [ -t 0 ]; then
-    (
-        cd "$NOTES_DIR"
-        $EDITOR "$note.md"
-    )
-else
-    while read -r line; do
-        echo "$line" >>"$note.md" || exit 1
-    done
-fi
