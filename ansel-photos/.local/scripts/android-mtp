@@ -1,0 +1,18 @@
+#!/bin/env bash
+
+PATH="$HOME/.local/scripts:$PATH"
+
+mkdir -p ~/mnt
+aft-mtp-mount ~/mnt || exit 1
+
+sources=(
+    "$HOME/mnt/Internal storage/DCIM/Camera"
+    "$HOME/mnt/Internal storage/DCIM/Camera/RAW"
+    "$HOME/mnt/Internal storage/DCIM/OpenCamera"
+)
+
+for source in "${sources[@]}"; do
+    find "$source" -type f \( -name *.jpg -o -name *.dng \) | pictures-import
+done
+
+fusermount -u ~/mnt

@@ -1,0 +1,15 @@
+#!/bin/env bash
+
+PATH="$HOME/.local/scripts:$PATH"
+
+sudo mount --mkdir /dev/sdb1 "$HOME/mnt" || exit 1
+
+sources=(
+    "$HOME/mnt/dcim/100_fuji"
+)
+
+for source in "${sources[@]}"; do
+    find "$source" -type f -name *.RAF | pictures-import
+done
+
+sudo umount "$HOME/mnt"

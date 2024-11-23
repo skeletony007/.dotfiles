@@ -1,0 +1,65 @@
+#!/bin/env bash
+
+dest="$HOME/Pictures/darktable"
+
+#######################################
+# Move files and set sensible default permissions and ownership
+# This should be the only function where any changes are made to the filesystem.
+# Arguments:
+#   the full source file path
+#   the full destination file path
+#######################################
+move_file_without_permission_and_ownership() {
+    local source_file=$1
+    local dest_file=$2
+
+    if [[ "$source_file" == "$dest_file" ]]; then
+        return
+    fi
+
+    # Ensure destination directory exists
+    mkdir -p "$(dirname "$dest_file")" || {
+        echo 'Error: could not create destination directory'
+        exit 1
+    }
+
+    echo "Moving $source_file -> $dest_file"
+    sudo mv --update=none-fail "$source_file" "$dest_file" || {
+        echo 'Error: a file would be replaced in the destination'
+        exit 1
+    }
+
+    sudo chown "$USER:$USER" "$dest_file" || exit 1
+    sudo chmod 644 "$dest_file" || exit 1
+}
+
+while IFS= read -r source_file; do
+    # Extract capture time from EXIF metadata
+    capture_time=$({
+        capture_time_array=($(exiv2 -q -Qm -Pkt "$source_file" | grep "Exif.\(Photo\|Image\).DateTimeOriginal[[:space:]]\+"))
+        capture_time="${capture_time_array[1]//:/}"
+        if [[ -n "$capture_time" ]]; then
+            echo "${capture_time%??}"
+        else
+            echo 'unknown'
+        fi
+    })
+
+    # Move the main image file
+    file_name=$(basename "$source_file")
+    dest_file="$dest/$capture_time/$file_name"
+    move_file_without_permission_and_ownership "$source_file" "$dest_file" || exit 1
+
+    # Move any sidecar file(s)
+    sidecar_patterns=(
+        "^.*/${file_name}.xmp$"                                # match base name sidecar (photo.xmp)
+        "^.*/${file_name%.*}_[0-9][0-9].${file_name##*.}.xmp$" # match numbered sidecars (photo_01.xmp, photo_02.xmp, etc.)
+    )
+    source=$(dirname "$source_file")
+    for sidecar_pattern in "${sidecar_patterns[@]}"; do
+        find "$source" -maxdepth 1 -type f -regex "$sidecar_pattern" | while IFS= read -r source_sidecar_file; do
+            dest_sidecar_file="$dest/$capture_time/$(basename "$source_sidecar_file")"
+            move_file_without_permission_and_ownership "$source_sidecar_file" "$dest_sidecar_file" || exit 1
+        done
+    done
+done
