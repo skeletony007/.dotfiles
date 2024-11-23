@@ -154,7 +154,7 @@ bar {
 }
 
 # lock screen
-bindsym Control+$mod+s exec --no-startup-id systemctl suspend
+bindsym Control+$mod+s exec --no-startup-id systemctl suspend-then-hibernate
 bindsym Control+$mod+l exec --no-startup-id loginctl lock-session
 
 # displays
