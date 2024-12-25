@@ -27,7 +27,7 @@ case $# in
 
     clean_name=$(sanitize_name "$selected")
 
-    if ! tmux has-session -t "$clean_name" 2>/dev/null; then
+    if ! tmux has-session -t "=$clean_name" 2>/dev/null; then
         tmux new-session -ds "$clean_name" -c "$HOME/$selected"
     fi
 
