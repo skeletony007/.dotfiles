@@ -33,3 +33,5 @@ fi
 
 export PERSONAL=$HOME/personal
 export WORK=$HOME/work
+
+bindkey -e
