@@ -32,54 +32,54 @@ fi
 
 license=$1
 # variables for each license, override as needed
-url=               # - url with license text source
-regex=.+           # - regex to match license text in source
-capture_group=0    # - capture group to use from regex (BASH_REMATCH)
-signature=cat      # - command to pipe matched text through
+url=            # - url with license text source
+regex=.+        # - regex to match license text in source
+capture_group=0 # - capture group to use from regex (BASH_REMATCH)
+signature='cat' # - command to pipe matched text through
 
 # custom logic is required for each license source
 case $license in
-    mit) # MIT License
-        url='https://spdx.org/licenses/MIT.txt'
+'mit') # MIT License
+    url='https://spdx.org/licenses/MIT.txt'
 
-        name=$(whoami)
-        declare -i year=$(date +%Y)
+    name=$(whoami)
+    declare -i year=$(date +%Y)
 
-        signature="
+    signature="
             sed -e 's/<year>/$year/g' \
                 -e 's/<copyright holders>/$name/g'
         "
-        ;;
-    gpl-3.0) # GNU General Public License v3.0
-        url='https://www.gnu.org/licenses/gpl-3.0.txt'
-        ## other: https://spdx.org/licenses/GPL-3.0.txt
+    ;;
+'gpl-3.0') # GNU General Public License v3.0
+    url='https://www.gnu.org/licenses/gpl-3.0.txt'
+    ## other: https://spdx.org/licenses/GPL-3.0.txt
 
-        name=$(whoami)
-        declare -i year=$(date +%Y)
-        program=$(basename "$(pwd)")
-        # NOTE: assume the user wants to provide a program description
-        read -p "Enter a description for $program: " desc
+    name=$(whoami)
+    declare -i year=$(date +%Y)
+    program=$(basename "$(pwd)")
+    # NOTE: assume the user wants to provide a program description
+    read -p "Enter a description for $program: " desc
 
-        signature="
+    signature="
             sed -e 's/<year>/$year/g' \
                 -e 's/<name of author>/$name/g' \
                 -e 's/<program>/$program/g' \
                 -e \"s/<one line to give the program's name and a brief idea of what it does.>/$desc/g\"
         "
-        ;;
-    wtfpl-2) # Do What The F*ck You Want To Public License version 2
-        url='https://spdx.org/licenses/WTFPL.txt'
-        ;;
-    glwtpl) # Good Luck With That Public License
-        url='https://raw.githubusercontent.com/me-shaon/GLWTPL/HEAD/LICENSE'
-        ;;
-    glwtpl-2) # Good Luck With That Public License NSFW version
-        url='https://raw.githubusercontent.com/me-shaon/GLWTPL/HEAD/NSFW_LICENSE'
-        ;;
-    *)
-        echo 'Usage: licence [mit|gpl-3.0|wtfpl|glwtpl|glwtpl-2]'
-        exit 1
-        ;;
+    ;;
+'wtfpl-2') # Do What The F*ck You Want To Public License version 2
+    url='https://spdx.org/licenses/WTFPL.txt'
+    ;;
+'glwtpl') # Good Luck With That Public License
+    url='https://raw.githubusercontent.com/me-shaon/GLWTPL/HEAD/LICENSE'
+    ;;
+'glwtpl-2') # Good Luck With That Public License NSFW version
+    url='https://raw.githubusercontent.com/me-shaon/GLWTPL/HEAD/NSFW_LICENSE'
+    ;;
+*)
+    echo 'Usage: licence [mit|gpl-3.0|wtfpl-2|glwtpl|glwtpl-2]'
+    exit 1
+    ;;
 esac
 
 source=$(curl -s "$url")
@@ -87,8 +87,8 @@ source=$(curl -s "$url")
 if [[ $source =~ $regex ]]; then
     license_text=$(echo "${BASH_REMATCH[$capture_group]}" | eval "$signature" | fold -sw 80)
     printf 'BEGIN LICENSE\n%s\nEND LICENSE' "$license_text"
-    printf '%s' "$license_text" > LICENSE
+    printf '%s' "$license_text" >LICENSE
 else
-    echo "license text not found at $url."
+    echo "license text not found at $url"
     exit 1
 fi
