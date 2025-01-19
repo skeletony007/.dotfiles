@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+MARKDOWN_EXTENSION='md'
+
 PATH="$HOME/.local/scripts:$PATH"
 EDITOR="${EDITOR:-vim}"
 NOTES_DIR=${PERSONAL-$HOME}/notes
@@ -17,9 +19,14 @@ case "$#" in
             cd "$NOTES_DIR" && "$@"
         )
     else
+        FILE="$NOTES_DIR/$*"
+        if [ "${FILE##*.}" != "$MARKDOWN_EXTENSION" ]; then
+            FILE="$FILE.$MARKDOWN_EXTENSION"
+        fi
+
         (
             cd "$NOTES_DIR" || exit 1
-            "$EDITOR" "$NOTES_DIR/$*.md"
+            "$EDITOR" "$FILE" || exit 1
 
             if git diff --staged --quiet; then
                 echo 'No staged changes to commit.'
