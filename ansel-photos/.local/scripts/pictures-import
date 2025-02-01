@@ -1,6 +1,14 @@
 #!/bin/env bash
 
-dest="$HOME/Pictures/darktable"
+# Never run this script as sudo ($USER will be root)
+
+dest="$1"
+
+compute_hash() {
+    local file=$1
+    local result=($(sha256sum "$file"))
+    echo "${result[0]}"
+}
 
 #######################################
 # Move files and set sensible default permissions and ownership
@@ -13,19 +21,31 @@ move_file_without_permission_and_ownership() {
     local source_file=$1
     local dest_file=$2
 
+    echo "Moving $source_file -> $dest_file"
+
     if [[ "$source_file" == "$dest_file" ]]; then
+        echo "Info: Skipping move. Source and destination paths are identical: $source_file"
         return
+    fi
+
+    if [[ -f "$dest_file" ]]; then
+        if [[ "$(compute_hash "$source_file")" == "$(compute_hash "$dest_file")" ]]; then
+            echo "Info: Skipping move. Source and destination files are identical"
+            return
+        else
+            echo "Error: There is already a different file at the destination with the same name $dest_file"
+            exit 1
+        fi
     fi
 
     # Ensure destination directory exists
     mkdir -p "$(dirname "$dest_file")" || {
-        echo 'Error: could not create destination directory'
+        echo 'Error: Could not create destination directory'
         exit 1
     }
 
-    echo "Moving $source_file -> $dest_file"
     sudo mv --update=none-fail "$source_file" "$dest_file" || {
-        echo 'Error: a file would be replaced in the destination'
+        echo 'Error: Could not move file'
         exit 1
     }
 
@@ -33,33 +53,46 @@ move_file_without_permission_and_ownership() {
     sudo chmod 644 "$dest_file" || exit 1
 }
 
+max_parallel_jobs=5
+current_jobs=0
+
 while IFS= read -r source_file; do
-    # Extract capture time from EXIF metadata
-    capture_time=$({
-        capture_time_array=($(exiv2 -q -Qm -Pkt "$source_file" | grep "Exif.\(Photo\|Image\).DateTimeOriginal[[:space:]]\+"))
-        capture_time="${capture_time_array[1]//:/}"
-        if [[ -n "$capture_time" ]]; then
-            echo "${capture_time%??}"
-        else
-            echo 'unknown'
-        fi
-    })
+    (
+        # Extract capture time from EXIF metadata
+        capture_time=$({
+            capture_time_array=($(exiv2 -q -Qm -Pkt "$source_file" | grep "Exif.\(Photo\|Image\).DateTimeOriginal[[:space:]]\+"))
+            capture_time="${capture_time_array[1]//:/}"
+            if [[ -n "$capture_time" ]]; then
+                echo "${capture_time%??}"
+            else
+                echo 'unknown'
+            fi
+        })
 
-    # Move the main image file
-    file_name=$(basename "$source_file")
-    dest_file="$dest/$capture_time/$file_name"
-    move_file_without_permission_and_ownership "$source_file" "$dest_file" || exit 1
+        # Move the main image file
+        file_name=$(basename "$source_file")
+        dest_file="$dest/$capture_time/$file_name"
+        move_file_without_permission_and_ownership "$source_file" "$dest_file" || exit 1
 
-    # Move any sidecar file(s)
-    sidecar_patterns=(
-        "^.*/${file_name}.xmp$"                                # match base name sidecar (photo.xmp)
-        "^.*/${file_name%.*}_[0-9][0-9].${file_name##*.}.xmp$" # match numbered sidecars (photo_01.xmp, photo_02.xmp, etc.)
-    )
-    source=$(dirname "$source_file")
-    for sidecar_pattern in "${sidecar_patterns[@]}"; do
-        find "$source" -maxdepth 1 -type f -regex "$sidecar_pattern" | while IFS= read -r source_sidecar_file; do
-            dest_sidecar_file="$dest/$capture_time/$(basename "$source_sidecar_file")"
-            move_file_without_permission_and_ownership "$source_sidecar_file" "$dest_sidecar_file" || exit 1
+        # Move any sidecar file(s)
+        sidecar_patterns=(
+            "^.*/${file_name}.xmp$"                                # match base name sidecar (photo.xmp)
+            "^.*/${file_name%.*}_[0-9][0-9].${file_name##*.}.xmp$" # match numbered sidecars (photo_01.xmp, photo_02.xmp, etc.)
+        )
+        source=$(dirname "$source_file")
+        for sidecar_pattern in "${sidecar_patterns[@]}"; do
+            find "$source" -maxdepth 1 -type f -regex "$sidecar_pattern" | while IFS= read -r source_sidecar_file; do
+                dest_sidecar_file="$dest/$capture_time/$(basename "$source_sidecar_file")"
+                move_file_without_permission_and_ownership "$source_sidecar_file" "$dest_sidecar_file" || exit 1
+            done
         done
-    done
+    ) &
+
+    ((current_jobs++))
+    if ((current_jobs >= max_parallel_jobs)); then
+        wait -n
+        ((current_jobs--))
+    fi
 done
+
+wait

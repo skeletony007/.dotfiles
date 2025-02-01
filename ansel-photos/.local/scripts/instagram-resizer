@@ -1,37 +1,42 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Produces correctly cropped Instagram photos in the current working directory
 # (non-destructive)
 
-if ! command -v magick &> /dev/null; then
+if ! command -v magick &>/dev/null; then
     echo 'Error: ImageMagick is not installed.'
     exit 1
 fi
 
-if ! command -v exiv2 &> /dev/null; then
+if ! command -v exiv2 &>/dev/null; then
     echo 'Error: Exiv2 is not installed.'
     exit 1
 fi
 
-size="$1"
+if ! command -v shasum &>/dev/null; then
+    echo 'Error: shasum is not installed.'
+    exit 1
+fi
+
+crop="$1"
 
 shift 1
 
-case "$size" in
-    square)
-        width=1080
-        height=$width
-        ;;
-    landscape)
-        width=1080
-        height=810
-        ;;
-    portrait)
-        width=1080
-        height=1350
-        ;;
-    *)
-        echo 'Error: Instagram post size can be square, landscape, or portrait:
+case "$crop" in
+square)
+    width=1080
+    height=$width
+    ;;
+landscape)
+    width=1080
+    height=810
+    ;;
+portrait)
+    width=1080
+    height=1350
+    ;;
+*)
+    echo 'Error: Instagram post crop can be square, landscape, or portrait:
 
 square      1:1   1080x1080
 landscape   4:3   1080x810
@@ -41,9 +46,9 @@ Width of 1080 pixels and aspect ratio between 1.91:1 and 4:5.
 
 https://help.instagram.com/1631821640426723
 
-Usage: ./instagram-resizer <size> <input_image_1> <input_image_2> ...'
-        exit 1
-        ;;
+Usage: ./instagram-resizer <crop> <input_image_1> <input_image_2> ...'
+    exit 1
+    ;;
 esac
 
 border_color=#ffffff
@@ -55,14 +60,15 @@ else
 fi
 
 watermark() {
-    echo "@photatogo  $(date '+%Y%m%d')  $(uuidgen)"
+    file_name_sha1sum=("$(echo -n "${file_name%.*}" | shasum)")
+    echo "@photatogo  $(date '+%Y%m')  ${file_name_sha1sum[0]:0:6}"
 }
 
 hex=${border_color#\#}
 r=$((16#${hex:0:2}))
 g=$((16#${hex:2:2}))
 b=$((16#${hex:4:2}))
-luminance=$(( (r * 2126 + g * 7152 + b * 722) / 10000 ))
+luminance=$(((r * 2126 + g * 7152 + b * 722) / 10000))
 if [ "$luminance" -gt 128 ]; then
     watermark_color=black
 else
@@ -70,22 +76,22 @@ else
 fi
 
 case "$(uname -s)" in
-    Linux)
-        watermark_font="$HOME/.local/share/fonts/UbuntuMonoNerdFontMono-Regular.ttf"
-        ;;
-    Darwin)
-        watermark_font="$HOME/Library/Fonts/UbuntuMonoNerdFontMono-Regular.ttf"
-        ;;
-    *)
-        echo 'Error: Operating system not supported.'
-        exit 1
-        ;;
+Linux)
+    watermark_font="$HOME/.local/share/fonts/UbuntuMonoNerdFontMono-Regular.ttf"
+    ;;
+Darwin)
+    watermark_font="$HOME/Library/Fonts/UbuntuMonoNerdFontMono-Regular.ttf"
+    ;;
+*)
+    echo 'Error: Operating system not supported.'
+    exit 1
+    ;;
 esac
 
 for input_file in "$@"; do
 
     file_name=$(basename "$input_file")
-    dest_file="./${file_name%.*}_$(echo "$size" | tr '[a-z]' '[A-Z]').${file_name##*.}"
+    dest_file="./${file_name%.*}_$(echo "$crop" | tr '[a-z]' '[A-Z]').${file_name##*.}"
 
     if [ -e "$dest_file" ]; then
         echo "Error: File or directory already exists. $dest_file"

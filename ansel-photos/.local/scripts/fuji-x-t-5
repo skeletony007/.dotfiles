@@ -2,14 +2,37 @@
 
 PATH="$HOME/.local/scripts:$PATH"
 
-sudo mount --mkdir /dev/sdb1 "$HOME/mnt" || exit 1
+if [[ -b "$1" ]]; then
+    echo "Mounting block device '$1' ..."
+    sudo mount --mkdir "$1" "$HOME/mnt" || exit 1
+    echo "Device '$1' mounted successfully"
+else
+    echo "Error: $1 is not a block device" && exit 1
+fi
 
 sources=(
     "$HOME/mnt/dcim/100_fuji"
 )
 
+empty=true
+empty_msg=
+
 for source in "${sources[@]}"; do
-    find "$source" -type f -name *.RAF | pictures-import
+    if ! [[ -d "$source" ]]; then
+        echo "Error: '$source' is not a directory" && exit 1
+    fi
+
+    find "$source" -type f -name *.JPG | pictures-import "$HOME/Pictures/digikam"
+    find "$source" -type f -name *.RAF | pictures-import "$HOME/Pictures/darktable"
+
+    files=$(ls -A "$source")
+    [[ -n "$files" ]] && empty=false
+    empty_msg+="Directory '$source' is $([[ -z "$files" ]] && echo 'empty' || echo 'not empty')\n"
 done
 
-sudo umount "$HOME/mnt"
+printf "$empty_msg"
+echo "Device '$1' is $([[ "$empty" == true ]] && echo 'empty' || echo 'not empty')"
+
+echo "Unmounting block device '$1' ..."
+sudo umount "$HOME/mnt" || exit 1
+echo "Device '$1' unmounted successfully"
