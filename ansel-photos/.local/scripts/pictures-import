@@ -6,7 +6,7 @@ dest="$1"
 
 compute_hash() {
     local file=$1
-    local result=($(sha256sum "$file"))
+    local result=($(sudo sha256sum "$file"))
     echo "${result[0]}"
 }
 
@@ -60,7 +60,7 @@ while IFS= read -r source_file; do
     (
         # Extract capture time from EXIF metadata
         capture_time=$({
-            capture_time_array=($(exiv2 -q -Qm -Pkt "$source_file" | grep "Exif.\(Photo\|Image\).DateTimeOriginal[[:space:]]\+"))
+            capture_time_array=($(sudo exiv2 -q -Qm -Pkt "$source_file" | grep "Exif.\(Photo\|Image\).DateTimeOriginal[[:space:]]\+"))
             capture_time="${capture_time_array[1]//:/}"
             if [[ -n "$capture_time" ]]; then
                 echo "${capture_time%??}"
@@ -81,7 +81,7 @@ while IFS= read -r source_file; do
         )
         source=$(dirname "$source_file")
         for sidecar_pattern in "${sidecar_patterns[@]}"; do
-            find "$source" -maxdepth 1 -type f -regex "$sidecar_pattern" | while IFS= read -r source_sidecar_file; do
+            sudo find "$source" -maxdepth 1 -type f -regex "$sidecar_pattern" | while IFS= read -r source_sidecar_file; do
                 dest_sidecar_file="$dest/$capture_time/$(basename "$source_sidecar_file")"
                 move_file_without_permission_and_ownership "$source_sidecar_file" "$dest_sidecar_file" || exit 1
             done

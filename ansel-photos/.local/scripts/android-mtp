@@ -1,9 +1,12 @@
 #!/bin/env bash
 
+# Running this script with sudo works
+
 PATH="$HOME/.local/scripts:$PATH"
 
-mkdir -p ~/mnt
-aft-mtp-mount ~/mnt || exit 1
+echo "Mounting Android device ..."
+mkdir -p "$HOME/mnt" && sudo aft-mtp-mount "$HOME/mnt" || exit 1
+echo "Android device mounted successfully"
 
 sources=(
     "$HOME/mnt/Internal storage/DCIM/Camera"
@@ -11,8 +14,21 @@ sources=(
     "$HOME/mnt/Internal storage/DCIM/OpenCamera"
 )
 
+empty=true
+empty_msg=
+
 for source in "${sources[@]}"; do
-    find "$source" -type f \( -name *.jpg -o -name *.dng \) | pictures-import
+    sudo find "$source" -type f \( -name '*.jpg' -o -name '*.mp4' \) | pictures-import "$HOME/Pictures/digikam"
+    sudo find "$source" -type f -name '*.dng' | pictures-import "$HOME/Pictures/darktable"
+
+    files=$(sudo ls -A "$source")
+    [[ -n "$files" ]] && empty=false
+    empty_msg+="Directory '$source' is $([[ -z "$files" ]] && echo 'empty' || echo 'not empty')\n"
 done
 
-fusermount -u ~/mnt
+printf "$empty_msg"
+echo "Android device is $([[ "$empty" == true ]] && echo 'empty' || echo 'not empty')"
+
+echo "Unmounting Android device ..."
+sudo fusermount -u "$HOME/mnt" || exit 1
+echo "Android device unmounted successfully"
