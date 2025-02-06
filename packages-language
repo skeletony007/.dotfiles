@@ -6,7 +6,7 @@ latex texlive texlab vale
 lua lua-language-server stylua
 markdown marksman prettier vale
 node typescript-language-server prettier
-python pyright isort black
+python pip python-virtualenv pyright isort black
 rust rust-analyzer
 sql mariadb vim-dadbod
 yaml prettier
