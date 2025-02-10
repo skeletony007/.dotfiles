@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # Produces correctly cropped Instagram photos in the current working directory
-# (non-destructive)
 
 if ! command -v magick &>/dev/null; then
     echo 'Error: ImageMagick is not installed.'
@@ -19,8 +18,11 @@ if ! command -v shasum &>/dev/null; then
 fi
 
 crop="$1"
+replace_files="$2"
+usage='Usage:
 
-shift 1
+    instagram-resizer <crop> [replace]
+'
 
 case "$crop" in
 square)
@@ -36,7 +38,7 @@ portrait)
     height=1350
     ;;
 *)
-    echo 'Error: Instagram post crop can be square, landscape, or portrait:
+    echo "Error: Instagram post crop can be square, landscape, or portrait:
 
 square      1:1   1080x1080
 landscape   4:3   1080x810
@@ -46,7 +48,7 @@ Width of 1080 pixels and aspect ratio between 1.91:1 and 4:5.
 
 https://help.instagram.com/1631821640426723
 
-Usage: ./instagram-resizer <crop> <input_image_1> <input_image_2> ...'
+$usage"
     exit 1
     ;;
 esac
@@ -70,9 +72,9 @@ g=$((16#${hex:2:2}))
 b=$((16#${hex:4:2}))
 luminance=$(((r * 2126 + g * 7152 + b * 722) / 10000))
 if [ "$luminance" -gt 128 ]; then
-    watermark_color=black
+    watermark_color=#000000
 else
-    watermark_color=white
+    watermark_color=#ffffff
 fi
 
 case "$(uname -s)" in
@@ -83,22 +85,22 @@ Darwin)
     watermark_font="$HOME/Library/Fonts/UbuntuMonoNerdFontMono-Regular.ttf"
     ;;
 *)
-    echo 'Error: Operating system not supported.'
+    echo 'Error: Operating system not supported (no font).'
     exit 1
     ;;
 esac
 
-for input_file in "$@"; do
-
-    file_name=$(basename "$input_file")
+while IFS= read -r source_file; do
+    file_name=$(basename "$source_file")
     dest_file="./${file_name%.*}_$(echo "$crop" | tr '[a-z]' '[A-Z]').${file_name##*.}"
 
-    if [ -e "$dest_file" ]; then
+    if [ "$replace_files" != true -a -e "$dest_file" ]; then
         echo "Error: File or directory already exists. $dest_file"
+        echo "Hint: $usage"
         exit 1
     fi
 
-    magick "$input_file" \
+    magick "$source_file" \
         -resize $((width - min_border * 2))x$((height - min_border * 2))\> -background "$border_color" -gravity center -extent "${width}x${height}" \
         -rotate 90 -gravity southwest -font "$watermark_font" -pointsize "$((height / 36))" -stroke "$watermark_color" -fill "$watermark_color" -strokewidth "$((width / 1080))" -annotate "+$((width / 108))+$((width / 108))" "$(watermark)" -rotate 270 \
         "$dest_file" && exiv2 rm "$dest_file" || exit 1

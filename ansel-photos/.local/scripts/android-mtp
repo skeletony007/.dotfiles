@@ -4,14 +4,16 @@
 
 PATH="$HOME/.local/scripts:$PATH"
 
+dir="$HOME/mnt/android"
+
 echo "Mounting Android device ..."
-mkdir -p "$HOME/mnt" && sudo aft-mtp-mount "$HOME/mnt" || exit 1
+mkdir -p "$HOME/mnt" && sudo aft-mtp-mount "$dir" || exit 1
 echo "Android device mounted successfully"
 
 sources=(
-    "$HOME/mnt/Internal storage/DCIM/Camera"
-    "$HOME/mnt/Internal storage/DCIM/Camera/RAW"
-    "$HOME/mnt/Internal storage/DCIM/OpenCamera"
+    "$dir/Internal storage/DCIM/Camera"
+    "$dir/Internal storage/DCIM/Camera/RAW"
+    "$dir/Internal storage/DCIM/OpenCamera"
 )
 
 empty=true
@@ -30,5 +32,5 @@ printf "$empty_msg"
 echo "Android device is $([[ "$empty" == true ]] && echo 'empty' || echo 'not empty')"
 
 echo "Unmounting Android device ..."
-sudo fusermount -u "$HOME/mnt" || exit 1
+sudo fusermount -u "$dir" || exit 1
 echo "Android device unmounted successfully"

@@ -2,16 +2,19 @@
 
 PATH="$HOME/.local/scripts:$PATH"
 
-if [[ -b "$1" ]]; then
+device=$1
+dir="$HOME/mnt/fuji-x-t5"
+
+if [[ -b "$device" ]]; then
     echo "Mounting block device '$1' ..."
-    sudo mount --mkdir "$1" "$HOME/mnt" || exit 1
-    echo "Device '$1' mounted successfully"
+    sudo mount --mkdir "$device" "$dir" || exit 1
+    echo "Device '$device' mounted successfully"
 else
-    echo "Error: $1 is not a block device" && exit 1
+    echo "Error: $device is not a block device" && exit 1
 fi
 
 sources=(
-    "$HOME/mnt/dcim/100_fuji"
+    "$dir/dcim/100_fuji"
 )
 
 empty=true
@@ -27,8 +30,8 @@ for source in "${sources[@]}"; do
 done
 
 printf "$empty_msg"
-echo "Device '$1' is $([[ "$empty" == true ]] && echo 'empty' || echo 'not empty')"
+echo "Device '$device' is $([[ "$empty" == true ]] && echo 'empty' || echo 'not empty')"
 
-echo "Unmounting block device '$1' ..."
-sudo umount "$HOME/mnt" || exit 1
-echo "Device '$1' unmounted successfully"
+echo "Unmounting block device '$device' ..."
+sudo umount "$dir" || exit 1
+echo "Device '$device' unmounted successfully"

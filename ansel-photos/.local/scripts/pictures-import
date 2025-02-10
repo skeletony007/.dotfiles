@@ -5,7 +5,7 @@
 dest="$1"
 
 compute_hash() {
-    local file=$1
+    local file="$1"
     local result=($(sudo sha256sum "$file"))
     echo "${result[0]}"
 }
@@ -18,8 +18,8 @@ compute_hash() {
 #   the full destination file path
 #######################################
 move_file_without_permission_and_ownership() {
-    local source_file=$1
-    local dest_file=$2
+    local source_file="$1"
+    local dest_file="$2"
 
     echo "Moving $source_file -> $dest_file"
 
