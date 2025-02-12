@@ -4,18 +4,18 @@ sanitize_name() {
     echo "$1" | tr . _
 }
 
-case $# in
+case "$#" in
 0)
     PATH="$HOME/.local/scripts:$PATH"
 
     tmux-sessionizer "$(
-        find $HOME $HOME/personal $HOME/work -mindepth 1 -maxdepth 1 -type d |
+        find "$HOME" "$HOME/personal" "$HOME/work" -mindepth 1 -maxdepth 1 -type d |
             sed "s%^$HOME/%%" |
-            fzf-tmux -p 80%,80% --preview "PATH='$PATH'; $(declare -f sanitize_name); tmux-tree "'"$(sanitize_name {})"'
+            fzf-tmux -p 80%,80% --preview "PATH='$PATH'; $(declare -f sanitize_name); tmux-tree \"\$(sanitize_name {})\""
     )"
     ;;
 1)
-    selected=$1
+    selected="$1"
 
     if [ -z "$selected" ]; then
         exit
@@ -25,7 +25,7 @@ case $# in
         exit 1
     fi
 
-    clean_name=$(sanitize_name "$selected")
+    clean_name="$(sanitize_name "$selected")"
 
     if ! tmux has-session -t "=$clean_name" 2>/dev/null; then
         tmux new-session -ds "$clean_name" -c "$HOME/$selected"
