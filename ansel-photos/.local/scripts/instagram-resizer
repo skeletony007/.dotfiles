@@ -101,7 +101,7 @@ while IFS= read -r source_file; do
     fi
 
     magick "$source_file" \
-        -resize $((width - min_border * 2))x$((height - min_border * 2))\> -background "$border_color" -gravity center -extent "${width}x${height}" \
+        -resize $((width - min_border * 2))x$((height - min_border * 2))\> -background "$border_color" -gravity center -extent "${width}x${height}" -colorspace sRGB \
         -rotate 90 -gravity southwest -font "$watermark_font" -pointsize "$((height / 36))" -stroke "$watermark_color" -fill "$watermark_color" -strokewidth "$((width / 1080))" -annotate "+$((width / 108))+$((width / 108))" "$(watermark)" -rotate 270 \
         "$dest_file" && exiv2 rm "$dest_file" || exit 1
 done
