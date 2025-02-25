@@ -17,8 +17,8 @@ if ! command -v shasum &>/dev/null; then
     exit 1
 fi
 
-crop="$1"
-replace_files="$2"
+crop=$1
+replace_files=$2
 usage='Usage:
 
     instagram-resizer <crop> [replace]
@@ -31,7 +31,7 @@ square)
     ;;
 landscape)
     width=1080
-    height=810
+    height=566
     ;;
 portrait)
     width=1080
@@ -40,13 +40,15 @@ portrait)
 *)
     echo "Error: Instagram post crop can be square, landscape, or portrait:
 
-square      1:1   1080x1080
-landscape   4:3   1080x810
-portrait    3:4   1080x1440
+square      1:1      1080x1080
+landscape   1.91:1   1080x566
+portrait    4:5      1080x1350
 
 Width of 1080 pixels and aspect ratio between 1.91:1 and 4:5.
 
 https://help.instagram.com/1631821640426723
+
+https://www.adobe.com/express/discover/sizes/instagram
 
 $usage"
     exit 1
@@ -62,7 +64,8 @@ else
 fi
 
 watermark() {
-    file_name_sha1sum=("$(echo -n "${file_name%.*}" | shasum)")
+    local file_name=$1
+    local file_name_sha1sum=("$(echo -n "${file_name%.*}" | shasum)")
     echo "@photatogo  $(date '+%Y%m')  ${file_name_sha1sum[0]:0:6}"
 }
 
@@ -94,14 +97,24 @@ while IFS= read -r source_file; do
     file_name=$(basename "$source_file")
     dest_file="./${file_name%.*}_$(echo "$crop" | tr '[a-z]' '[A-Z]').${file_name##*.}"
 
-    if [ "$replace_files" != true -a -e "$dest_file" ]; then
-        echo "Error: File or directory already exists. $dest_file"
-        echo "Hint: $usage"
-        exit 1
+    if [ -e "$dest_file" ]; then
+        if [ "$replace_files" == true ]; then
+            source_mod_time=$(date -r "$source_file" +%Y%m%d%H%M%S)
+            dest_mod_time=$(date -r "$dest_file" +%Y%m%d%H%M%S)
+
+            if [ "$source_mod_time" -le "$dest_mod_time" ]; then
+                echo "Info: Destination newer than source. Skipping $source_file"
+                continue
+            fi
+        else
+            echo "Error: File or directory already exists. $dest_file"
+            echo "Hint: $usage"
+            exit 1
+        fi
     fi
 
     magick "$source_file" \
-        -resize $((width - min_border * 2))x$((height - min_border * 2))\> -background "$border_color" -gravity center -extent "${width}x${height}" -colorspace sRGB \
-        -rotate 90 -gravity southwest -font "$watermark_font" -pointsize "$((height / 36))" -stroke "$watermark_color" -fill "$watermark_color" -strokewidth "$((width / 1080))" -annotate "+$((width / 108))+$((width / 108))" "$(watermark)" -rotate 270 \
+        -resize "$((width - min_border * 2))x$((height - min_border * 2))>" -background "$border_color" -gravity center -extent "${width}x${height}" -colorspace sRGB \
+        -rotate 90 -gravity southwest -font "$watermark_font" -pointsize "$((height / 36))" -stroke "$watermark_color" -fill "$watermark_color" -strokewidth "$((width / 1080))" -annotate "+$((width / 108))+$((width / 108))" "$(watermark "$file_name")" -rotate 270 \
         "$dest_file" && exiv2 rm "$dest_file" || exit 1
 done
