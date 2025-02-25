@@ -5,6 +5,7 @@ pass pass-otp zbar
 zsh oh-my-zsh
 man-pages
 bin
+bc
 less
 watch
 tree
