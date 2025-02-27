@@ -8,7 +8,7 @@ case $# in
         $(<"$HOME/.dotfiles/packages-${BASH_REMATCH[1]}")"
     ;;
 *)
-    all_packages="$@"
+    all_packages=$@
     ;;
 esac
 
