@@ -28,6 +28,17 @@ case "$#" in
             cd "$NOTES_DIR" || exit 1
             "$EDITOR" "$FILE" || exit 1
 
+            calendar_changes=$(
+                {
+                    git diff --name-only
+                    git ls-files --others --exclude-standard
+                } | grep -E 'calendar/[0-9]{8}\.md'
+            )
+            if [ -n "$calendar_changes" ]; then
+                echo "Auto-staging calendar files..."
+                git add "$calendar_changes"
+            fi
+
             if git diff --staged --quiet; then
                 echo 'No staged changes to commit.'
             else
