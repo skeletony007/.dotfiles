@@ -27,8 +27,19 @@ for day in range(days):
         day_str = day_dt.strftime("%Y%m%d")
         with open(os.path.join(CALENDAR_DIR, day_str + ".md"), "r") as file:
             full_weekday_name = day_dt.strftime("%A")
+
+            today_weekday = today.weekday()
+            boundaries = {
+                "this_week_dt_upper": today + datetime.timedelta(days=(7 - today_weekday)),
+                "next_week_dt_upper": today + datetime.timedelta(days=(14 - today_weekday)),
+                }
             if day_dt == today:
                 full_weekday_name += " (today)"
+            elif today <= day_dt < boundaries["this_week_dt_upper"]:
+                full_weekday_name += " (this week)"
+            elif boundaries["this_week_dt_upper"] <= day_dt < boundaries["next_week_dt_upper"]:
+                full_weekday_name += " (next week)"
+
             print(
                 f"{BOLD}{day_str}{RESET} {GREY}{full_weekday_name}{RESET}\n"
                 f"{'=' * len(f"{day_str} {full_weekday_name}")}\n\n"
