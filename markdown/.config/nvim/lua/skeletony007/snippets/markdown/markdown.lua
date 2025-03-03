@@ -1,6 +1,6 @@
 return {
     s(
-        { trig = "---", desc = "Insert YAML frontmatter" },
+        { trig = "frontmatter", desc = "Insert YAML frontmatter" },
         fmt(
             [[
             ---
@@ -75,22 +75,6 @@ return {
 
                     return table.concat(top_tags, ", ")
                 end, {}),
-                i(0),
-            }
-        )
-    ),
-    s(
-        { trig = "```", desc = "Markdown code block" },
-        fmt(
-            [[
-            ```{}
-            {}
-            ```
-            {}
-            ]],
-            {
-                i(1),
-                i(2),
                 i(0),
             }
         )
