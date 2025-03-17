@@ -59,12 +59,6 @@ border_color=#ffffff
 
 min_border=$((7 * (width / 100)))
 
-watermark() {
-    local file_name=$1
-    local file_name_sha1sum=("$(echo -n "${file_name%.*}" | shasum)")
-    echo "@photatogo  $(date '+%Y%m')  ${file_name_sha1sum[0]:0:6}"
-}
-
 hex=${border_color#\#}
 r=$((16#${hex:0:2}))
 g=$((16#${hex:2:2}))
@@ -90,8 +84,12 @@ Darwin)
 esac
 
 while IFS= read -r source_file; do
-    file_name=$(basename "$source_file")
-    dest_file="./${file_name%.*}_$(echo "$crop" | tr '[a-z]' '[A-Z]').${file_name##*.}"
+    anonymous_file_name=$({
+        file_basename=$(basename "$source_file")
+        file_name_sha1sum=("$(echo -n "${file_basename%.*}" | shasum)")
+        echo "${file_name_sha1sum[0]:0:6}"
+    })
+    dest_file="./$(echo "${anonymous_file_name}_${crop}" | tr '[a-z]' '[A-Z]').jpg"
 
     if [ -e "$dest_file" ]; then
         if [ "$replace_files" == true ]; then
@@ -111,6 +109,19 @@ while IFS= read -r source_file; do
 
     magick "$source_file" \
         -resize "$((width - min_border * 2))x$((height - min_border * 2))>" -background "$border_color" -gravity center -extent "${width}x${height}" -colorspace sRGB \
-        -rotate 90 -gravity southwest -font "$watermark_font" -pointsize "$((width / 36))" -stroke "$watermark_color" -fill "$watermark_color" -strokewidth "$((width / 1080))" -annotate "+$((width / 108))+$((width / 108))" "$(watermark "$file_name")" -rotate 270 \
+        -rotate 90 -gravity southwest -font "$watermark_font" -pointsize "$((width / 36))" -stroke "$watermark_color" -fill "$watermark_color" -strokewidth "$((width / 1080))" -annotate "+$((width / 108))+$((width / 108))" "$({
+            # Extract capture time from EXIF metadata (format: YYYYMM)
+            capture_time=$({
+                capture_time_array=($(exiv2 -q -Qm -Pkt "$source_file" | grep "Exif.\(Photo\|Image\).DateTimeOriginal[[:space:]]\+"))
+                capture_time="${capture_time_array[1]//:/}"
+                if [[ -n "$capture_time" ]]; then
+                    echo "${capture_time%??}"
+                else
+                    echo 'unknown'
+                fi
+            })
+
+            echo "@photatogo  $capture_time  $anonymous_file_name"
+        })" -rotate 270 \
         "$dest_file" && exiv2 rm "$dest_file" || exit 1
 done
