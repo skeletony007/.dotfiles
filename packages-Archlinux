@@ -5,6 +5,7 @@ xorg
 xss-lock
 xsecurelock
 i3
+dmenu
 pipewire
 wireplumber
 playerctl

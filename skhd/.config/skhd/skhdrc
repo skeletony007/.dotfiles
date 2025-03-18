@@ -6,7 +6,7 @@
 cmd - return : alacritty --option 'window.decorations="none"' --option 'font.size=24.0'
 
 # start dmenu-desktop-mac (a program launcher)
-cmd - d : ~/.local/scripts/dmenu-desktop-mac
+cmd - d : open -a Launchpad
 
 # change focus
 alt - h : yabai -m window --focus west
@@ -105,9 +105,6 @@ ctrl + cmd - 1 : yabai -m space --display 1
 ctrl + cmd - 2 : yabai -m space --display 2
 
 ctrl + cmd - g : ~/.local/scripts/auto-av
-
-# passmenu
-cmd - p : ~/.local/scripts/passmenu-mac
 
 # some references:
 # https://i3wm.org/docs/refcard.html

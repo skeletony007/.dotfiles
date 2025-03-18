@@ -18,12 +18,14 @@
 yabai -m signal --add event=dock_did_restart action='sudo yabai --load-sa'
 sudo yabai --load-sa
 
+yabai -m rule --add app="^System Settings$" manage=off
+
 yabai -m config                                 \
     layout                       bsp            \
     mouse_follows_focus          off            \
     window_shadow                off            \
     window_gap                   06             \
-    focus_follows_mouse          autoraise      \
+    focus_follows_mouse          off            \
     mouse_modifier               alt            \
                                                                                                    
 # configure spaces
