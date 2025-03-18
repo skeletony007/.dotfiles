@@ -1,30 +1,35 @@
 return {
     "tpope/vim-fugitive",
 
+    dependencies = {
+        "skeletony007/git-help.nvim",
+    },
+
     config = function()
         vim.keymap.set("n", "<leader>gs", vim.cmd.Git)
 
         local skeletony007_fugitive_group = vim.api.nvim_create_augroup("skeletony007FugitiveGroup", {})
 
-        vim.api.nvim_create_autocmd("BufWinEnter", {
+        vim.api.nvim_create_autocmd("FileType", {
             group = skeletony007_fugitive_group,
-            callback = function()
-                if vim.bo.ft ~= "fugitive" then
-                    return
-                end
+            pattern = "fugitive",
+            callback = function(opts)
+                local o = { buffer = opts.buf, remap = false }
 
-                local bufnr = vim.api.nvim_get_current_buf()
-                local opts = { buffer = bufnr, remap = false }
+                vim.keymap.set("n", "<leader>p", function() vim.cmd.Git("push") end, o)
 
-                vim.keymap.set("n", "<leader>p", function() vim.cmd.Git("push") end, opts)
+                vim.keymap.set("n", "<leader>P", function() vim.cmd.Git("pull --rebase --autostash") end, o)
 
-                vim.keymap.set("n", "<leader>P", function() vim.cmd.Git("pull --rebase --autostash") end, opts)
-
-                vim.keymap.set("n", "<leader>t", ":Git push -u origin ", opts)
+                vim.keymap.set(
+                    "n",
+                    "<leader>t",
+                    string.format(
+                        ":Git push --set-upstream '%s' ",
+                        require("git-help").get_upstreams(vim.loop.cwd())[1] or "origin"
+                    ),
+                    o
+                )
             end,
         })
-
-        vim.keymap.set("n", "gu", "<cmd>diffget //2<CR>")
-        vim.keymap.set("n", "gh", "<cmd>diffget //3<CR>")
     end,
 }
