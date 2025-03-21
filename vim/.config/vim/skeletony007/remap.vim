@@ -15,8 +15,6 @@ noremap <leader>y "+y
 nnoremap <leader>Y "+Y
 noremap <leader>d "_d
 
-nnoremap <C-f> <cmd>silent !tmux-sessionizer<CR>
-
 nnoremap ]q :cnext<CR>zz
 nnoremap [q :cprevious<CR>zz
 

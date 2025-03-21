@@ -15,8 +15,6 @@ vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 
-vim.keymap.set("n", "<C-f>", function() vim.system({ "tmux-sessionizer" }) end)
-
 vim.keymap.set("n", "]q", function()
     if not pcall(vim.cmd.cnext) then
         vim.cmd.cfirst()
