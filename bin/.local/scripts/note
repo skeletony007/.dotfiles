@@ -2,15 +2,14 @@
 
 MARKDOWN_EXTENSION='md'
 
-PATH="$HOME/.local/scripts:$PATH"
 EDITOR="${EDITOR:-vim}"
-NOTES_DIR=${PERSONAL-$HOME}/notes
+NOTES_DIR="${PERSONAL-$HOME}/notes"
 mkdir -p "$NOTES_DIR"
 
 case "$#" in
 0)
     mkdir -p "$NOTES_DIR/calendar"
-    note "calendar/$(date '+%Y%m%d')"
+    "$0" "calendar/$(date '+%Y%m%d')"
     ;;
 *)
     # Patterns begining with "git" as the first argument are considered Git commands
@@ -32,7 +31,7 @@ case "$#" in
                 {
                     git diff --name-only
                     git ls-files --others --exclude-standard
-                } | grep -E 'calendar/[0-9]{8}\.md'
+                } | grep -E "calendar/[0-9]{8}\.${MARKDOWN_EXTENSION}"
             )
             if [ -n "$calendar_changes" ]; then
                 echo "Auto-staging calendar files..."
