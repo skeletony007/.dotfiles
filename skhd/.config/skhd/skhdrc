@@ -4,9 +4,10 @@
 
 # start a terminal
 cmd - return : alacritty --option 'window.decorations="none"' --option 'font.size=24.0'
+cmd + shift - return : open -a Terminal.app
 
 # start dmenu-desktop-mac (a program launcher)
-cmd - d : open -a Launchpad
+cmd - d : open -a Launchpad.app
 
 # change focus
 alt - h : yabai -m window --focus west
@@ -67,7 +68,7 @@ cmd + shift - 8 : yabai -m window --space space-8
 cmd + shift - 9 : yabai -m window --space space-9
 
 # restart yabai and shkd inplace (tries to preserve your layout/session)
-cmd + shift - r : ~/.local/scripts/yabai-restart; skhd --restart-service
+cmd + shift - r : ~/.local/scripts/yabai-restart; skhd --reload
 
 # exit yabai and shkd
 cmd + shift - e : yabai --stop-service; skhd --stop-service
@@ -110,4 +111,3 @@ ctrl + cmd - g : ~/.local/scripts/auto-av
 # https://i3wm.org/docs/refcard.html
 # https://gist.github.com/TomFaulkner/5531bde4f2955c08bcd07d6e308f6d59
 # https://github.com/koekeishiya/yabai/issues/200#issuecomment-519257233
-# https://reddit.com/r/unixporn/comments/xpnwf0/comment/iq4vjcz
