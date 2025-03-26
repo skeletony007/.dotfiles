@@ -28,7 +28,6 @@ return {
             local config = cmp.get_config()
             table.insert(config.sources, 2, { name = "luasnip" })
             config.snippet.expand = function(args) require("luasnip").lsp_expand(args.body) end
-
             cmp.setup(config)
 
             require("luasnip.loaders.from_lua").lazy_load(_G.personal.ls.loaders.lua.opts)
@@ -43,6 +42,10 @@ return {
     },
     {
         "danymat/neogen",
+        -- stable versions
+        version = "*",
+
+        dependencies = { "L3MON4D3/LuaSnip" },
 
         config = function()
             local neogen = require("neogen")
@@ -52,7 +55,5 @@ return {
             -- NOTE: vim idiom capital K for cursor symbol information
             vim.keymap.set({ "n", "i", "s" }, "<C-s>K", function() neogen.generate() end)
         end,
-        -- stable versions
-        version = "*",
     },
 }
