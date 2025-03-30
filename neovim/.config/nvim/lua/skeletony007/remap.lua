@@ -15,26 +15,6 @@ vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 
-vim.keymap.set("n", "]q", function()
-    if not pcall(vim.cmd.cnext) then
-        vim.cmd.cfirst()
-    end
-    vim.cmd("normal! zz")
-end)
-vim.keymap.set("n", "[q", function()
-    if not pcall(vim.cmd.cprevious) then
-        vim.cmd.clast()
-    end
-    vim.cmd("normal! zz")
-end)
-vim.keymap.set("n", "<leader>qq", function()
-    if vim.fn.getqflist({ winid = 0 }).winid == 0 then
-        vim.cmd.copen()
-    else
-        vim.cmd.cclose()
-    end
-end)
-
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set("n", "<leader>x", function()
     local file_path = vim.fn.expand("%:p")

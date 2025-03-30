@@ -16,15 +16,15 @@ return {
 
         telescope.load_extension("git_worktree")
 
-        vim.keymap.set("n", "<leader>gwd", function() telescope.extensions.git_worktree.git_worktrees() end, {
-            desc = [[
-            [G]it [W]orktree [D]irecrories
-
-            <Enter> - switches to that worktree
-            <c-d> - deletes that worktree
-            <c-f> - toggles forcing of the next deletion
-            ]],
-        })
+        -- <Enter> - switches to that worktree
+        -- <c-d> - deletes that worktree
+        -- <c-f> - toggles forcing of the next deletion
+        vim.keymap.set(
+            "n",
+            "<leader>gwd",
+            function() telescope.extensions.git_worktree.git_worktrees() end,
+            { desc = "[G]it [W]orktree [D]irecrories" }
+        )
 
         vim.keymap.set("n", "<leader>gwn", function()
             worktree.create_worktree(git_help_worktree.create_worktree_menu(vim.loop.cwd()))
