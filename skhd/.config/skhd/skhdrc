@@ -6,8 +6,11 @@
 cmd - return : alacritty --option 'window.decorations="none"' --option 'font.size=24.0'
 cmd + shift - return : open -a Terminal.app
 
-# start dmenu-desktop-mac (a program launcher)
+# start Launchpad (a program launcher)
 cmd - d : open -a Launchpad.app
+
+# start Finder (file manager)
+cmd - e : open -a Finder.app
 
 # change focus
 alt - h : yabai -m window --focus west
