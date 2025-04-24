@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+
+export RUSTUP_HOME="$HOME/.rustup"
+
+add_to_path "$HOME/.cargo/env"
+add_to_path "$HOME/.cargo/bin"

@@ -1,4 +1,0 @@
-#!/usr/bin/env zsh
-
-VIM='nvim'
-alias vim=$VIM

@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+VIM='nvim'
+alias vim="$VIM"
+
+export VISUAL="$VIM"
+export EDITOR="$VIM"
+export MANPAGER="$VIM +Man!"
+
+add_to_path "$HOME/.local/share/nvim/mason/bin"

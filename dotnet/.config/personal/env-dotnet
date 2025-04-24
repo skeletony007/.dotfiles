@@ -1,3 +1,0 @@
-#!/usr/bin/env zsh
-
-export DOTNET_ROOT=$HOME/.dotnet

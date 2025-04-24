@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+
+export DOTNET_ROOT="$HOME/.dotnet"
+
+add_to_path "$HOME/.dotnet"
+add_to_path "$HOME/.dotnet/tools"
