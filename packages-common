@@ -8,7 +8,6 @@ bin
 bc
 less
 watch
-tree
 ripgrep
 fzf
 tmux
