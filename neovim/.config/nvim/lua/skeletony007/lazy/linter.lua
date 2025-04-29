@@ -6,19 +6,21 @@ return {
     },
 
     config = function()
+        local personal = require("skeletony007.personal")
+
         local lint = require("lint")
         lint.linters_by_ft = {}
-        local skeletony007_lint_group = vim.api.nvim_create_augroup("skeletony007LintGroup", {})
+        local group = vim.api.nvim_create_augroup("skeletony007.lint", {})
 
-        for ft, linters in pairs(_G.personal.linters_by_ft) do
+        for ft, linters in pairs(personal.linters_by_ft) do
             vim.api.nvim_create_autocmd("FileType", {
-                group = skeletony007_lint_group,
+                group = group,
                 pattern = ft,
                 callback = function()
                     for _, linter in ipairs(linters) do
-                        if _G.personal.linter_init[linter]() then
+                        if personal.linter_init[linter]() then
                             lint.linters_by_ft[ft] =
-                                _G.personal.merge_table_recursive(lint.linters_by_ft[ft] or {}, { linter })
+                                personal.merge_table_recursive(lint.linters_by_ft[ft] or {}, { linter })
                         elseif lint.linters_by_ft[ft] then
                             lint.linters_by_ft[ft] = vim.tbl_filter(
                                 function(entry) return entry ~= linter end,
@@ -31,7 +33,7 @@ return {
         end
 
         vim.api.nvim_create_autocmd("BufWritePost", {
-            group = skeletony007_lint_group,
+            group = group,
             callback = function() lint.try_lint() end,
         })
 
@@ -40,9 +42,9 @@ return {
         vim.api.nvim_create_user_command("LintInfo", function()
             local linters = lint.linters_by_ft[vim.bo.filetype] or {}
             if #linters == 0 then
-                vim.api.nvim_out_write("no linters for this buffer\n")
+                vim.notify("no linters for this buffer")
             else
-                vim.api.nvim_out_write("linters for this buffer: " .. table.concat(linters, ", ") .. "\n")
+                vim.notify("linters for this buffer: " .. table.concat(linters, ", ") .. "\n")
             end
         end, {})
     end,

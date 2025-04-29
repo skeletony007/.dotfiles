@@ -30,7 +30,7 @@ return {
             config.snippet.expand = function(args) require("luasnip").lsp_expand(args.body) end
             cmp.setup(config)
 
-            require("luasnip.loaders.from_lua").lazy_load(_G.personal.ls.loaders.lua.opts)
+            require("luasnip.loaders.from_lua").lazy_load(require("skeletony007.personal").ls.loaders.lua.opts)
         end,
     },
     {

@@ -4,10 +4,8 @@ return {
     priority = 1000,
 
     config = function()
-        local skeletony007_colors_group = vim.api.nvim_create_augroup("skeletony007ColorsGroup", {})
-
         vim.api.nvim_create_autocmd("ColorScheme", {
-            group = skeletony007_colors_group,
+            group = vim.api.nvim_create_augroup("skeletony007.colors", {}),
             callback = function()
                 local palette = {
                     base = "none",
@@ -15,7 +13,7 @@ return {
                     panel_fg = vim.api.nvim_get_hl(0, { name = "Normal" }).fg,
                     panel_bg_muted = "#1c1c1c", -- color233
                     panel_fg_muted = vim.api.nvim_get_hl(0, { name = "Comment" }).fg,
-                    panel_bg_focus = "#4e4e4e" -- color239
+                    panel_bg_focus = "#4e4e4e", -- color239
                 }
 
                 local hl_overrides = {

@@ -51,8 +51,10 @@ return {
         },
 
         config = function()
+            local personal = require("skeletony007.personal")
+
             require("mason").setup()
-            require("mason-lspconfig").setup(_G.personal.mason_lspconfig.setup)
+            require("mason-lspconfig").setup(personal.mason_lspconfig.setup)
         end,
     },
 }

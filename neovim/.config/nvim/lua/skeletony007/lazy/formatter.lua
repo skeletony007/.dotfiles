@@ -6,19 +6,21 @@ return {
     },
 
     config = function()
+        local personal = require("skeletony007.personal")
+
         local conform = require("conform")
         conform.setup()
-        local skeletony007_conform_group = vim.api.nvim_create_augroup("skeletony007ConformGroup", {})
+        local group = vim.api.nvim_create_augroup("skeletony007.conform", {})
 
-        for ft, formatters in pairs(_G.personal.formatters_by_ft) do
+        for ft, formatters in pairs(personal.formatters_by_ft) do
             vim.api.nvim_create_autocmd("FileType", {
-                group = skeletony007_conform_group,
+                group = group,
                 pattern = ft,
                 callback = function()
                     for _, formatter in ipairs(formatters) do
-                        if _G.personal.formatter_init[formatter]() then
+                        if personal.formatter_init[formatter]() then
                             conform.formatters_by_ft[ft] =
-                                _G.personal.merge_table_recursive(conform.formatters_by_ft[ft] or {}, { formatter })
+                                personal.merge_table_recursive(conform.formatters_by_ft[ft] or {}, { formatter })
                         elseif conform.formatters_by_ft[ft] then
                             conform.formatters_by_ft[ft] = vim.tbl_filter(
                                 function(entry) return entry ~= formatter end,
@@ -32,7 +34,7 @@ return {
 
         vim.keymap.set(
             { "n", "v" },
-            "<leader>f",
+            "gq",
             function()
                 conform.format({
                     lsp_fallback = true,

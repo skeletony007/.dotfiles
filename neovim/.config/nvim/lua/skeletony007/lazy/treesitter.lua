@@ -4,7 +4,11 @@ return {
 
         build = ":TSUpdate",
 
-        config = function() require("nvim-treesitter.configs").setup(_G.personal.nvim_treesitter.setup) end,
+        config = function()
+            local personal = require("skeletony007.personal")
+
+            require("nvim-treesitter.configs").setup(personal.nvim_treesitter.setup)
+        end,
     },
     {
         "nvim-treesitter/nvim-treesitter-context",

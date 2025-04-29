@@ -1,6 +1,8 @@
 return {
     "ThePrimeagen/git-worktree.nvim",
 
+    -- dir = os.getenv("PERSONAL") .. "/git-worktree.nvim.git/master",
+
     dependencies = {
         "nvim-lua/plenary.nvim",
         "nvim-telescope/telescope.nvim",
@@ -27,6 +29,10 @@ return {
         )
 
         vim.keymap.set("n", "<leader>gwn", function()
+            -- local function test_harness(path, branch, upstream)
+            --     print("path: " .. path, "branch: " .. branch, "upstream: " .. upstream)
+            -- end
+            -- worktree.create_worktree_menu()
             worktree.create_worktree(git_help_worktree.create_worktree_menu(vim.loop.cwd()))
         end, { desc = "[G]it [W]orktree [N]ew" })
     end,
