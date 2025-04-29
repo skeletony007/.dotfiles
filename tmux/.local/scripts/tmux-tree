@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-tmux ls -F '#{session_id}' | while read -r s; do
+while read s; do
     S=$(tmux ls -F '#{session_id}:#{session_name}: #{T:tree_mode_format}' | grep ^"$s:")
     session_info="${S##$s:}"
     session_name="$(echo "$session_info" | cut -d ':' -f 1)"
@@ -13,4 +13,8 @@ tmux ls -F '#{session_id}' | while read -r s; do
         W=$(tmux lsw -t "$s" -F'#{window_id}#{T:tree_mode_format}' | grep ^"$w")
         echo "└─> ${W##$w}"
     done
-done
+done < <(
+    tmux list-sessions -F '#{session_created} #{session_id}' |
+        sort -rn |
+        cut -d ' ' -f2- 2>/dev/null
+)

@@ -7,7 +7,25 @@ sanitize_name() {
 case "$#" in
 0)
     "$0" "$(
-        find "$HOME" "$HOME/personal" "$HOME/work" -mindepth 1 -maxdepth 1 -type d |
+        tmux_sessions=$(
+            tmux list-sessions -F '#{session_last_attached} #{session_path}' |
+                sort -rn |
+                tail -n +2 |
+                cut -d ' ' -f2- 2>/dev/null
+        )
+
+        {
+            (test -n "$tmux_sessions" && echo "$tmux_sessions") &
+
+            declare -a args=()
+            while read s; do
+                args+=('-not' '-path' "$s")
+            done < <(echo "$tmux_sessions")
+
+            wait
+
+            find "$HOME" "$HOME/personal" "$HOME/work" -mindepth 1 -maxdepth 1 -type d "${args[@]}"
+        } |
             sed "s%^$HOME/%%" |
             fzf-tmux -p 80%,80% --preview "PATH='$PATH'; $(declare -f sanitize_name); tmux-tree \"\$(sanitize_name {})\""
     )"
