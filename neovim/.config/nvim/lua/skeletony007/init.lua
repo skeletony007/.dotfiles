@@ -12,8 +12,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
     group = skeletony007_group,
     callback = function(args)
         local opts = { buffer = args.buf }
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-        vim.keymap.set("n", "ge", vim.diagnostic.open_float, opts)
+        vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
+        vim.keymap.set("n", "ge", function() vim.diagnostic.open_float() end, opts)
     end,
 })
 
