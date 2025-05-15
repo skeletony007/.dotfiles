@@ -1,13 +1,11 @@
 #!/bin/env bash
 
-# Running this script with sudo works
-
 PATH="$HOME/.local/scripts:$PATH"
 
 dir="$HOME/mnt/android"
 
 echo "Mounting Android device ..."
-mkdir -p "$HOME/mnt" && sudo aft-mtp-mount "$dir" || exit 1
+mkdir -p "$dir" && sudo aft-mtp-mount "$dir" || exit 1
 echo "Android device mounted successfully"
 
 sources=(
@@ -20,8 +18,8 @@ empty=true
 empty_msg=
 
 for source in "${sources[@]}"; do
-    sudo find "$source" -type f \( -name '*.jpg' -o -name '*.mp4' \) | pictures-import "$HOME/Pictures/digikam"
     sudo find "$source" -type f -name '*.dng' | pictures-import "$HOME/Pictures/darktable"
+    sudo find "$source" -type f \( -name '*.jpg' -o -name '*.mp4' \) | pictures-import "$HOME/Pictures/digikam"
 
     files=$(sudo ls -A "$source")
     [[ -n "$files" ]] && empty=false
