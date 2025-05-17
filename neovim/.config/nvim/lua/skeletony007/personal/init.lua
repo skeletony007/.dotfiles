@@ -1,6 +1,7 @@
 --- Table of resources for my neovim config (e.g. lsp/formatter/linter setup).
 --- Merges any table returned by modules in `skeletony007.personal` with the
 --- correct semantic version.
+--- @type skeletony007.presonal.Resource
 local M = {}
 
 --- Merge two lua tables intuitively.
@@ -31,6 +32,7 @@ local dir_handle = vim.loop.fs_scandir(vim.fn.stdpath("config") .. "/lua/skeleto
 for name, type in vim.loop.fs_scandir_next, dir_handle do
     if name ~= "init.lua" and (type == "file" or type == "link") and name:match("%.lua$") then
         local modname = "skeletony007.personal." .. name:gsub("%.lua$", "")
+        --- @type skeletony007.presonal.Resource
         local resource = require(modname)
         if resource.version == "0.0.1" then
             M.merge_table_recursive(M, resource)

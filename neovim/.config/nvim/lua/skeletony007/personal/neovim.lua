@@ -1,3 +1,4 @@
+--- @class skeletony007.presonal.Resource
 return {
     version = "0.0.1",
 
