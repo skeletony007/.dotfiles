@@ -1,20 +1,18 @@
 #!/usr/bin/env bash
 
-while read s; do
-    S=$(tmux ls -F '#{session_id}:#{session_name}: #{T:tree_mode_format}' | grep ^"$s:")
-    session_info="${S##$s:}"
-    session_name="$(echo "$session_info" | cut -d ':' -f 1)"
+while read session; do
+    IFS=':' read -r _ session_name session_windows <<<"$session"
     if [[ "$1" == "$session_name" ]]; then
-        echo -e "- \033[1;34m$session_info\033[0m"
+        echo -e "- \033[1;34m${session_name}: ${session_windows}\033[0m"
     else
-        echo -e "- $session_info"
+        echo -e "- ${session_name}: ${session_windows}"
     fi
-    tmux lsw -t "$s" -F'#{window_id}' | while read -r w; do
-        W=$(tmux lsw -t "$s" -F'#{window_id}#{T:tree_mode_format}' | grep ^"$w")
-        echo "└─> ${W##$w}"
-    done
+    while read -r window_tree; do
+        echo "└─> ${window_tree}"
+    done < <(
+        tmux list-windows -t "$session_name" -F '#{T:tree_mode_format}' 2>/dev/null
+    )
 done < <(
-    tmux list-sessions -F '#{session_created} #{session_id}' |
-        sort -rn |
-        cut -d ' ' -f2- 2>/dev/null
+    tmux list-sessions -F '#{session_created}:#{session_name}:#{T:tree_mode_format}' |
+        sort -n 2>/dev/null
 )

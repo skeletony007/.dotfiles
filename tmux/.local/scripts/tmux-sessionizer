@@ -6,28 +6,57 @@ sanitize_name() {
 
 case "$#" in
 0)
-    "$0" "$(
-        tmux_sessions=$(
-            tmux list-sessions -F '#{session_last_attached} #{session_path}' |
-                sort -rn |
-                tail -n +2 |
-                cut -d ' ' -f2- 2>/dev/null
-        )
-
+    find_projects() {
         {
-            (test -n "$tmux_sessions" && echo "$tmux_sessions") &
-
             declare -a args=()
-            while read s; do
-                args+=('-not' '-path' "$s")
-            done < <(echo "$tmux_sessions")
+            declare -a active_sessions=()
+            while read session; do
+                IFS=':' read -r _ session_attached session_path session_windows <<<"$session"
 
-            wait
+                args+=(-not -path "$session_path")
 
-            find "$HOME" "$HOME/personal" "$HOME/work" -mindepth 1 -maxdepth 1 -type d "${args[@]}"
-        } |
-            sed "s%^$HOME/%%" |
-            fzf-tmux -p 80%,80% --preview "PATH='$PATH'; $(declare -f sanitize_name); tmux-tree \"\$(sanitize_name {})\""
+                session_item=
+                if [ "$1" = inline-preview ]; then
+                    session_item="${session_path}: ${session_windows}"
+                else
+                    session_item="$session_path"
+                fi
+
+                if [ "$session_attached" = 1 ]; then
+                    active_sessions=("$session_item" "${active_sessions[@]}")
+                else
+                    echo "$session_item"
+                fi
+            done < <(
+                tmux list-sessions -F '#{session_last_attached}:#{session_attached}:#{session_path}:#{T:tree_mode_format}' |
+                    sort -rn 2>/dev/null
+            )
+
+            for active_session in "${active_sessions[@]}"; do
+                echo "$active_session"
+            done
+
+            find "$HOME" "${HOME}/personal" "${HOME}/work" -mindepth 1 -maxdepth 1 -type d "${args[@]}"
+        } | sed "s%^${HOME}/%%"
+    }
+    "$0" "$(
+        if [[ "$(tmux display-message -p '#{window_width}')" -lt 120 ]]; then
+            find_projects inline-preview | fzf-tmux --delimiter ':' \
+                --nth '1' \
+                --accept-nth '1' \
+                --scheme path \
+                --tiebreak 'begin,pathname,length' \
+                -p 80%,90%
+        else
+            find_projects | fzf-tmux --scheme path \
+                --tiebreak 'begin,pathname,length' \
+                -p 80%,90% \
+                --preview "
+            PATH='$PATH'
+            $(declare -f sanitize_name)
+            tmux-tree \"\$(sanitize_name '{}' | cut -d ':' -f 1)\"
+            "
+        fi
     )"
     ;;
 1)
@@ -37,16 +66,24 @@ case "$#" in
         exit
     fi
 
-    if [ ! -d "$HOME/$selected" ]; then
+    if [ ! -d "${HOME}/${selected}" ]; then
         exit 1
     fi
 
-    clean_name="$(sanitize_name "$selected")"
+    session_name=$(sanitize_name "$selected")
 
-    if ! tmux has-session -t "=$clean_name" 2>/dev/null; then
-        tmux new-session -ds "$clean_name" -c "$HOME/$selected"
+    if ! tmux has-session -t "=${session_name}" 2>/dev/null; then
+        case "$selected" in
+        'personal' | 'work')
+            tmux new-session -d -c "${HOME}/${selected}" -s "$session_name"
+            ;;
+        *)
+            tmux new-session -d -c "${HOME}/${selected}" -s "$session_name" 'zsh -ic vim' \; \
+                new-window -d -c "${HOME}/${selected}" -t "$session_name"
+            ;;
+        esac
     fi
 
-    tmux switch-client -t "$clean_name"
+    tmux switch-client -t "=$session_name"
     ;;
 esac

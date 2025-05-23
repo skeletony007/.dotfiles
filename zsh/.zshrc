@@ -5,7 +5,19 @@ if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
 fi
 
 if [ -z "$TMUX" ]; then
-    exec tmux new-session -A -s 'personal' -c "$HOME/personal"
+    while true; do
+        clear
+
+        tmux new-session -A -d -s 'personal' -c "$HOME/personal"
+
+        if ! tmux has-session 2>/dev/null; then
+            exit
+        fi
+        if ! tmux has-session -t '=personal' 2>/dev/null; then
+            echo -e '\033[1;33mWARNING:\033[0m Destroy all other Tmux sessions first. Restoring session.'
+            sleep 1
+        fi
+    done
 fi
 
 export XDG_CONFIG_HOME="$HOME/.config"
