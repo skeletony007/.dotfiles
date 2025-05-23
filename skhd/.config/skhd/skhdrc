@@ -3,7 +3,7 @@
 # cmd - space
 
 # start a terminal
-cmd - return : alacritty --option 'window.decorations="none"' --option 'font.size=24.0'
+cmd - return : alacritty --option 'window.decorations="none"' --option 'font.size=28'
 cmd + shift - return : open -a Terminal.app
 
 # start Launchpad (a program launcher)
