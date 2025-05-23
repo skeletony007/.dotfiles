@@ -5,10 +5,21 @@
     name = skeletony007
     email = skeletony007@users.noreply.github.com
     signingkey = key::ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDP3u2jy5dzfOO0C+Kx3KggBmntWOMCOZSdotiGjGvAFXVpadxs4fzn9zIxqbFNwbFWN+aa0rLN2jS1W/arE3HcbYUEtyWQTiFm2kVp+3OiKOgPdDSJq5MEM74kTj2bPSqexzq3dtid9zHYuQ2x0HPUJrmzx1biWHF2yXGn4yvnDC0reGdIa3/rcfJGBkAHmTqynuJ+pS4VU9JDUzAbc6Pp7TMOvEzKfu0zgFwnMtg1E62PNPGMmzuKZ2v906Ai+v4A9Codfk0ot2X/WZZQZ9iG1CQoWu7MT83iUp+7G1VIs1eigoOAW5ooraBxzT0WQAhkq8Y8LfubzT+eSJOAeTGuHYBV0kHKfXrmRKxo31koKIlc/4ltKt7cmdXQNZxOVD2NEW9ths0wA79q6DZZ0VcTXyN2U4l7mHIjOYivEQTtLNYGk0sZO5Fs4q1MGsmEAvpsM7Mi2I9zRS/XS3G0Q5dYKVVZoHpaqcw31nVA4h8rV5IB4IC72XkFG52PpuD/9r397i68WpHw5JjfjpGAVGJ7QxRB4xgIlxByNUEFvZQ0mxLcvmDUJ2mnhn9FDg48JRceLTRADa5QyarpReX71dQ8uOY38TgMGEO/HSR24+eeQMmp5EwW+8sbn+w40+xWUcDtFcxdZhnewD6y7OfxBYZWvR6NrhmvpjivCvk3WzkFdw== skeletony007
+
 [gpg]
     format = ssh
+
 [commit]
     gpgsign = true
+    verbose = true
+
+[alias]
+    st = status -s
+    lol = log --oneline --graph --all
+
+[diff]
+    algorithm = histogram
+    renames = copies
 
 [includeif "gitdir:~/personal/"]
     path = ~/.config/git/config-personal
