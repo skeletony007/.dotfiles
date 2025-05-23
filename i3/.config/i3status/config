@@ -11,10 +11,19 @@ general {
         interval = 5
 }
 
+order += "volume master"
 order += "disk /"
 order += "battery all"
 order += "load"
 order += "tztime local"
+
+volume master {
+        format = "volume: %volume"
+        format_muted = "volume: muted (%volume)"
+        device = "default"
+        mixer = "Master"
+        mixer_idx = 0
+}
 
 battery all {
         format = "%status %percentage %remaining"
