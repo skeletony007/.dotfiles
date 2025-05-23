@@ -11,3 +11,4 @@ rust rust-analyzer
 sql mariadb vim-dadbod
 yaml prettier
 zsh
+asm nasm gdb
