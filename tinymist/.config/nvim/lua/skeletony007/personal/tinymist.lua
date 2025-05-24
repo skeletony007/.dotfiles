@@ -1,4 +1,4 @@
---- @class skeletony007.presonal.Resource
+--- @class skeletony007.personal.Resource
 return {
   version = '0.0.1',
   mason_lspconfig = {

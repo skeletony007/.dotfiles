@@ -1,4 +1,4 @@
---- @class skeletony007.presonal.Resource
+--- @class skeletony007.personal.Resource
 --- @field version? "0.0.1"
 --- @field nvim_treesitter? skeletony007.personal.NvimTreesitterConfig
 --- @field blink_cmp? skeletony007.personal.BlinkCmpConfig
