@@ -13,5 +13,5 @@ case $# in
 esac
 
 for place in "$HOME/personal/ansible-roles" "$HOME/.dotfiles"; do
-    cd "$place" && ./install "$all_packages" || exit 1
+    cd "$place" && ./install $all_packages || exit 1
 done
