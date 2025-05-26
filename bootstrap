@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 
-case $# in
+case "$#" in
 0)
-    [[ $(ansible localhost -m setup -a 'filter=ansible_os_family') =~ ansible_os_family\":\ \"([^\"]+)\" ]] || exit 1
-    all_packages="${BASH_REMATCH[1]}
-        $(<"$HOME/.dotfiles/packages-common")
-        $(<"$HOME/.dotfiles/packages-${BASH_REMATCH[1]}")"
+    [[ $(
+        ansible local -i "$HOME/personal/ansible-roles/hosts" \
+            -m setup -a 'filter=ansible_os_family' 2>/dev/null
+    ) =~ \"ansible_os_family\":[[:space:]]\"([^\"]+)\" ]] || exit 1
+    ansible_os_family="${BASH_REMATCH[1]}"
+    all_packages="${ansible_os_family}
+$(<"$HOME/.dotfiles/packages-common")
+$(<"$HOME/.dotfiles/packages-${ansible_os_family}")"
     ;;
 *)
-    all_packages=$@
+    all_packages="$@"
     ;;
 esac
 

@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+
+package="$1"
+echo "package $package"
+mkdir -p "$package"
+
+shift
+
+for path in "$@"; do
+    relative_path="${path#"${HOME}/"}"
+
+    if [ -L "$path" ] || ! ([ -f "$path" ] || [ -d "$path" ]); then
+        echo "skipping ${relative_path}"
+        continue
+    fi
+
+    echo "adding ${relative_path}"
+    destination_dir=$(dirname "${package}/${relative_path}")
+    mkdir -p "$destination_dir"
+    mv "$path" "$destination_dir"
+done
+
+printf 'stow %s\n' "$package"
+stow "$package"
