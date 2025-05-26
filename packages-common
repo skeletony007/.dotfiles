@@ -1,6 +1,6 @@
 openssh
 gnupg
-git
+git github-cli
 pass pass-otp zbar
 zsh oh-my-zsh
 man-pages
