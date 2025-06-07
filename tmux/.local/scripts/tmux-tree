@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 
-while read session; do
-    IFS=':' read -r _ session_name session_windows <<<"$session"
+while IFS=':' read -r _ session_name session_windows; do
     if [[ "$1" == "$session_name" ]]; then
         echo -e "- \033[1;34m${session_name}: ${session_windows}\033[0m"
     else
         echo -e "- ${session_name}: ${session_windows}"
     fi
-    while read -r window_tree; do
+    while IFS= read -r window_tree; do
         echo "└─> ${window_tree}"
     done < <(
         tmux list-windows -t "$session_name" -F '#{T:tree_mode_format}' 2>/dev/null

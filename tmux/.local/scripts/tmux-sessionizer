@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 sanitize_name() {
-    echo "$1" | tr . _
+    echo "${1//./_}"
 }
 
 case "$#" in
@@ -9,79 +9,69 @@ case "$#" in
     find_projects() {
         {
             declare -a args=()
-            declare -a active_sessions=()
-            while read session; do
-                IFS=':' read -r _ session_attached session_path session_windows <<<"$session"
-
+            while IFS=':' read -r _ _ session_path session_windows; do
                 args+=(-not -path "$session_path")
 
-                session_item=
-                if [ "$1" = inline-preview ]; then
-                    session_item="${session_path}: ${session_windows}"
+                if [ "$1" = 'inline-preview' ]; then
+                    echo "${session_path}: ${session_windows}"
                 else
-                    session_item="$session_path"
-                fi
-
-                if [ "$session_attached" = 1 ]; then
-                    active_sessions=("$session_item" "${active_sessions[@]}")
-                else
-                    echo "$session_item"
+                    echo "$session_path"
                 fi
             done < <(
-                tmux list-sessions -F '#{session_last_attached}:#{session_attached}:#{session_path}:#{T:tree_mode_format}' |
-                    sort -rn 2>/dev/null
+                tmux list-sessions -F '#{session_attached}:#{session_last_attached}:#{session_path}:#{T:tree_mode_format}' |
+                    sort -t ':' -k1n -k2rn 2>/dev/null
             )
-
-            for active_session in "${active_sessions[@]}"; do
-                echo "$active_session"
-            done
 
             find "$HOME" "${HOME}/personal" "${HOME}/work" -mindepth 1 -maxdepth 1 -type d "${args[@]}"
         } | sed "s%^${HOME}/%%"
     }
     "$0" "$(
-        if [[ "$(tmux display-message -p '#{window_width}')" -lt 120 ]]; then
-            find_projects inline-preview | fzf-tmux --delimiter ':' \
+        declare -a args=(--scheme 'path' --tiebreak 'begin,pathname,length' -p '80%,90%')
+        if [ "$(tmux display-message -p '#{window_width}')" -lt 120 ]; then
+            find_projects inline-preview | fzf-tmux "${args[@]}" \
+                --delimiter ':' \
                 --nth '1' \
-                --accept-nth '1' \
-                --scheme path \
-                --tiebreak 'begin,pathname,length' \
-                -p 80%,90%
+                --accept-nth '1'
         else
-            find_projects | fzf-tmux --scheme path \
-                --tiebreak 'begin,pathname,length' \
-                -p 80%,90% \
-                --preview "
-            PATH='$PATH'
+            find_projects | fzf-tmux "${args[@]}" --preview "
             $(declare -f sanitize_name)
-            tmux-tree \"\$(sanitize_name '{}' | cut -d ':' -f 1)\"
+            tmux-tree \"\$(sanitize_name '{}')\"
             "
         fi
     )"
     ;;
 1)
     selected="$1"
-
     if [ -z "$selected" ]; then
         exit
     fi
 
-    if [ ! -d "${HOME}/${selected}" ]; then
+    start_directory="${HOME}/${selected}"
+    if [ ! -d "$start_directory" ]; then
         exit 1
     fi
 
     session_name=$(sanitize_name "$selected")
 
     if ! tmux has-session -t "=${session_name}" 2>/dev/null; then
-        case "$selected" in
-        'personal' | 'work')
-            tmux new-session -d -c "${HOME}/${selected}" -s "$session_name"
-            ;;
-        *)
-            tmux new-session -d -c "${HOME}/${selected}" -s "$session_name" 'zsh -ic vim' \; \
-                new-window -d -c "${HOME}/${selected}" -t "$session_name"
-            ;;
-        esac
+        declare -a tmux_command=(tmux new-session -d -c "$start_directory" -s "$session_name")
+
+        shada="${XDG_CONFIG_HOME}/tmux/shada/$(echo "$selected" | shasum -a 1 | cut -d ' ' -f 1 2>/dev/null)"
+        if [ ! -f "$shada" ]; then
+            shada="${XDG_CONFIG_HOME}/tmux/shada/default"
+        fi
+
+        first=true
+        while IFS= read -r command; do
+            if "$first"; then
+                first=false
+            else
+                tmux_command+=(\; new-window -d -c "$start_directory" -t "$session_name")
+            fi
+            tmux_command+=("$command")
+        done <"$shada"
+
+        "${tmux_command[@]}"
     fi
 
     tmux switch-client -t "=$session_name"

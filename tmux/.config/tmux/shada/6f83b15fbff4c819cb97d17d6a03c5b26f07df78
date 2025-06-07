@@ -1,0 +1,2 @@
+"$SHELL" -ic note
+"$SHELL" -ic 'while true; do clear; agenda; echo "Press Enter to refresh or Ctrl+C to quit..."; read -r -t 60; done'
