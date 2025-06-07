@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+declare -a all_packages=()
 case "$#" in
 0)
     [[ $(
@@ -7,15 +8,17 @@ case "$#" in
             -m setup -a 'filter=ansible_os_family' 2>/dev/null
     ) =~ \"ansible_os_family\":[[:space:]]\"([^\"]+)\" ]] || exit 1
     ansible_os_family="${BASH_REMATCH[1]}"
-    all_packages="${ansible_os_family}
-$(<"$HOME/.dotfiles/packages-common")
-$(<"$HOME/.dotfiles/packages-${ansible_os_family}")"
+    IFS=' ' read -r -a all_packages <<<"${ansible_os_family} $(
+        tr '\n' ' ' <"${HOME}/.dotfiles/packages-common"
+    ) $(
+        tr '\n' ' ' <"${HOME}/.dotfiles/packages-${ansible_os_family}"
+    )"
     ;;
 *)
-    all_packages="$@"
+    all_packages=("$@")
     ;;
 esac
 
 for place in "$HOME/personal/ansible-roles" "$HOME/.dotfiles"; do
-    cd "$place" && ./install $all_packages || exit 1
+    cd "$place" && ./install "${all_packages[@]}" || exit 1
 done
