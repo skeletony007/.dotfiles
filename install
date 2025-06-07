@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ "$(git config core.sparseCheckout)" = 'true' ]; then
-    git sparse-checkout add "$@" --skip-checks
+    git sparse-checkout add "$@"
 fi
 
 declare -a nap=()

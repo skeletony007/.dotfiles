@@ -29,23 +29,10 @@ git clone --depth=1 --single-branch git@github.com:skeletony007/ansible-roles.gi
 ~/.dotfiles/bootstrap package ...
 ```
 
-> [!TIP]
-> Ignore tmux-quick-menu locally:
->
-> ```
-> git update-index --assume-unchanged tmux/.config/tmux/tmux-quick-menu
-> ```
->
-> Undo:
->
-> ```
-> git update-index --no-assume-unchanged tmux/.config/tmux/tmux-quick-menu
-> ```
-
-## Example: Install packages for a specific language
+## Example: Find packages for a specific language
 
 ```
-./install $(grep markdown packages-language)
+grep '^markdown ' 'packages-language'
 ```
 
 Read the [docs](/docs/stow-packages.md#stow-packages).
