@@ -8,7 +8,7 @@ if [ -z "$TMUX" ]; then
     while true; do
         clear
 
-        tmux new-session -A -d -s 'personal' -c "$HOME/personal"
+        tmux new-session -A -d -c "$HOME/personal" -s 'personal'
 
         if ! tmux has-session 2>/dev/null; then
             exit
