@@ -13,10 +13,6 @@
     gpgsign = true
     verbose = true
 
-[alias]
-    st = status -s
-    lol = log --oneline --graph --all
-
 [diff]
     algorithm = histogram
     renames = copies
