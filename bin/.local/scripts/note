@@ -6,13 +6,42 @@ EDITOR="${EDITOR:-vim}"
 NOTES_DIR="${PERSONAL-$HOME}/notes"
 mkdir -p "$NOTES_DIR"
 
+autocommit() {
+    (
+        cd "$NOTES_DIR" || exit 1
+
+        calendar_changes=$(
+            {
+                git diff --name-only
+                git ls-files --others --exclude-standard
+            } | grep -E "calendar/[0-9]{8}\.${MARKDOWN_EXTENSION}"
+        )
+        if [ -n "$calendar_changes" ]; then
+            echo "Auto-staging calendar files..."
+            echo "$calendar_changes" | xargs git add
+        fi
+
+        if git diff --staged --quiet; then
+            echo 'No staged changes to commit.'
+        else
+            git commit -m "Update notes: $(date '+%Y-%m-%d %H:%M:%S %z')"
+        fi
+    )
+}
+
+if [ ! -t 0 ]; then
+    autocommit
+    exit 0
+fi
+
 case "$#" in
 0)
     mkdir -p "$NOTES_DIR/calendar"
     "$0" "calendar/$(date '+%Y%m%d')"
     ;;
 *)
-    # Patterns begining with "git" as the first argument are considered Git commands
+    # Git commands are patterns with "git" as the first argument and additional
+    # arguments are for Git
     if [ "$1" == git ]; then
         (
             cd "$NOTES_DIR" && "$@"
@@ -25,24 +54,12 @@ case "$#" in
 
         (
             cd "$NOTES_DIR" || exit 1
-            "$EDITOR" "$FILE" || exit 1
 
-            calendar_changes=$(
-                {
-                    git diff --name-only
-                    git ls-files --others --exclude-standard
-                } | grep -E "calendar/[0-9]{8}\.${MARKDOWN_EXTENSION}"
-            )
-            if [ -n "$calendar_changes" ]; then
-                echo "Auto-staging calendar files..."
-                git add "$calendar_changes"
+            if [ -t 0 ]; then
+                "$EDITOR" "$FILE" || exit 1
             fi
 
-            if git diff --staged --quiet; then
-                echo 'No staged changes to commit.'
-            else
-                git commit -m "Update notes: $(date '+%Y-%m-%d %H:%M:%S %z')"
-            fi
+            autocommit
         )
     fi
     ;;
