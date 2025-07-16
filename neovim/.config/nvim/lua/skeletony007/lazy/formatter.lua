@@ -1,10 +1,6 @@
 return {
     "stevearc/conform.nvim",
 
-    dependencies = {
-        "WhoIsSethDaniel/mason-tool-installer.nvim",
-    },
-
     config = function()
         local personal = require("skeletony007.personal")
 

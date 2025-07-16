@@ -1,8 +1,5 @@
 return {
     {
-        "neovim/nvim-lspconfig",
-    },
-    {
         "saghen/blink.cmp",
 
         version = "1.*",
