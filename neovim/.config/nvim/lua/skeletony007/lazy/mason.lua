@@ -8,8 +8,8 @@ return {
         "mason-org/mason-lspconfig.nvim",
 
         dependencies = {
-            "williamboman/mason.nvim",
-            "saghen/blink.cmp", -- used in personal config
+            "neovim/nvim-lspconfig",
+            "mason-org/mason.nvim",
         },
 
         config = function()
@@ -21,7 +21,7 @@ return {
         "WhoIsSethDaniel/mason-tool-installer.nvim",
 
         dependencies = {
-            "williamboman/mason.nvim",
+            "mason-org/mason.nvim",
         },
 
         config = function()
