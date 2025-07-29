@@ -1,3 +1,5 @@
+vim.opt.spelllang = "en_gb,en_us"
+
 vim.opt.guicursor = ""
 
 vim.opt.number = true
