@@ -1,0 +1,4 @@
+# vim: filetype=git_config
+
+[safe]
+	directory = /media/skeletony007/BRICK/bootstrap
