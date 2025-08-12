@@ -2,6 +2,8 @@
 
 # Produces correctly cropped Instagram photos in the current working directory
 
+set -euo pipefail
+
 if ! command -v magick &>/dev/null; then
     echo 'Error: ImageMagick is not installed.'
     exit 1
@@ -17,57 +19,90 @@ if ! command -v shasum &>/dev/null; then
     exit 1
 fi
 
-crop=$1
-replace_files=$2
-usage='Usage:
+crop='square'
+border_color='#ffffff'
+replace_files_option=false
+smart_replace_files_option=true
 
-    instagram-resizer <crop> [replace]
-'
+print_usage() {
+    echo 'Usage: instagram-resizer --crop <crop> --border <border-color> [--replace] [--no-smart-replace]'
+}
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+    '--crop')
+        crop="$2"
+        shift 2
+        ;;
+    '--border')
+        border_color="$2"
+        shift 2
+        ;;
+    '--replace')
+        replace_files_option=true
+        shift
+        ;;
+    '--no-smart-replace')
+        smart_replace_files_option=false
+        shift
+        ;;
+    '-h' | '--help')
+        print_usage
+        exit 0
+        ;;
+    *)
+        printf 'Unknown option: %q\n' "$1"
+        print_usage
+        exit 1
+        ;;
+    esac
+done
 
 case "$crop" in
-square)
+'square')
     width=1080
     height=$width
     ;;
-landscape)
+'landscape')
     width=1080
     height=566
     ;;
-portrait)
+'portrait')
     width=1080
     height=1350
     ;;
 *)
-    echo "Error: Instagram post crop can be square, landscape, or portrait:
-
-square      1:1      1080x1080
-landscape   1.91:1   1080x566
-portrait    4:5      1080x1350
-
-Width of 1080 pixels and aspect ratio between 1.91:1 and 4:5.
-
-https://help.instagram.com/1631821640426723
-
-https://www.adobe.com/express/discover/sizes/instagram
-
-$usage"
+    echo 'Error: Instagram post crop can be square, landscape, or portrait:'
+    echo
+    echo 'square      1:1      1080x1080'
+    echo 'landscape   1.91:1   1080x566'
+    echo 'portrait    4:5      1080x1350'
+    echo
+    echo 'Width of 1080 pixels and aspect ratio between 1.91:1 and 4:5.'
+    echo
+    echo 'https://help.instagram.com/1631821640426723'
+    echo
+    echo 'https://www.adobe.com/express/discover/sizes/instagram'
+    print_usage
     exit 1
     ;;
 esac
 
-border_color=#ffffff
-
 min_border=$((7 * (width / 100)))
 
 hex=${border_color#\#}
+if [[ ! "$hex" =~ ^[0-9a-fA-F]{6}$ ]]; then
+    printf 'Error: Invalid border color format. Use a 6-digit hex value like %q' '#000000'
+    exit 1
+fi
 r=$((16#${hex:0:2}))
 g=$((16#${hex:2:2}))
 b=$((16#${hex:4:2}))
 luminance=$(((r * 2126 + g * 7152 + b * 722) / 10000))
 if [ "$luminance" -gt 128 ]; then
-    watermark_color=#000000
+    watermark_color='#000000'
 else
-    watermark_color=#ffffff
+    watermark_color='#ffffff'
 fi
 
 case "$(uname -s)" in
@@ -92,19 +127,21 @@ while IFS= read -r source_file; do
     dest_file="./$(echo "${anonymous_file_name}_${crop}" | tr '[a-z]' '[A-Z]').jpg"
 
     if [ -e "$dest_file" ]; then
-        if [ "$replace_files" == true ]; then
+        case "$replace_files_option" in
+        true)
             source_mod_time=$(date -r "$source_file" +%Y%m%d%H%M%S)
             dest_mod_time=$(date -r "$dest_file" +%Y%m%d%H%M%S)
 
-            if [ "$source_mod_time" -le "$dest_mod_time" ]; then
-                echo "Info: Destination newer than source. Skipping $source_file"
+            if [ "$smart_replace_files_option" == true ] && [ "$source_mod_time" -le "$dest_mod_time" ]; then
+                printf "Info(%q): Destination newer than source. Skipping with 'smart-replace'. Use '--no-smart-replace' option here.\n" "$source_file"
                 continue
             fi
-        else
-            echo "Error: File or directory already exists. $dest_file"
-            echo "Hint: $usage"
+            ;;
+        false)
+            printf 'Error(%q): File or directory already exists %q.\n' "$source_file" "$dest_file"
             exit 1
-        fi
+            ;;
+        esac
     fi
 
     magick "$source_file" \
@@ -123,5 +160,5 @@ while IFS= read -r source_file; do
 
             echo "@photatogo  $capture_time  $anonymous_file_name"
         })" -rotate 270 \
-        "$dest_file" && exiv2 rm "$dest_file" || exit 1
+        "$dest_file" && exiv2 rm "$dest_file"
 done

@@ -1,11 +1,13 @@
 #!/bin/env bash
 
+set -euo pipefail
+
 PATH="$HOME/.local/scripts:$PATH"
 
 dir="$HOME/mnt/android"
 
 echo "Mounting Android device ..."
-mkdir -p "$dir" && sudo aft-mtp-mount "$dir" || exit 1
+mkdir -p "$dir" && sudo aft-mtp-mount "$dir"
 echo "Android device mounted successfully"
 
 sources=(
@@ -18,8 +20,8 @@ empty=true
 empty_msg=
 
 for source in "${sources[@]}"; do
-    sudo find "$source" -type f -name '*.dng' | pictures-import "$HOME/Pictures/darktable"
-    sudo find "$source" -type f \( -name '*.jpg' -o -name '*.mp4' \) | pictures-import "$HOME/Pictures/digikam"
+    sudo find "$source" -type f -name '*.dng' | pictures-import --dest "$HOME/Pictures/darktable" --remove
+    sudo find "$source" -type f \( -name '*.jpg' -o -name '*.mp4' \) | pictures-import --dest "$HOME/Pictures/digikam" --remove
 
     files=$(sudo ls -A "$source")
     [[ -n "$files" ]] && empty=false
@@ -30,5 +32,5 @@ printf "$empty_msg"
 echo "Android device is $([[ "$empty" == true ]] && echo 'empty' || echo 'not empty')"
 
 echo "Unmounting Android device ..."
-sudo fusermount -u "$dir" || exit 1
+sudo fusermount -u "$dir"
 echo "Android device unmounted successfully"

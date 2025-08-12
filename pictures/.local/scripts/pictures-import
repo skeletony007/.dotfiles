@@ -2,8 +2,47 @@
 
 # Never run this script as sudo ($USER will be root)
 
-dest="$1"
+set -euo pipefail
 
+dest=
+remove_option_value='keep'
+
+print_usage() {
+    echo "Usage: $(basename "$0") --dest <destination-dir> [--remove]"
+    echo
+    echo 'Options:'
+    echo '  --dest <dir>      Destination directory for moved files (required)'
+    echo '  --remove          Remove source files after copying (like move, mv)'
+    echo '  -h, --help        Show this help message'
+}
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+    '--dest')
+        dest="$2"
+        shift 2
+        ;;
+    '--remove')
+        remove_option_value='remove'
+        shift
+        ;;
+    '-h' | '--help')
+        print_usage
+        exit 0
+        ;;
+    *)
+        printf 'Unknown option: %q\n' "$1"
+        print_usage
+        exit 1
+        ;;
+    esac
+done
+
+#######################################
+# Compute the SHA256 hash for a file.
+# Arguments:
+#   the full file path
+#######################################
 compute_hash() {
     local file="$1"
     local result=($(sudo sha256sum "$file"))
@@ -11,87 +50,144 @@ compute_hash() {
 }
 
 #######################################
-# Move files and set sensible default permissions and ownership
+# Copy files and set sensible default permissions and ownership
 # This should be the only function where any changes are made to the filesystem.
-# Arguments:
-#   the full source file path
-#   the full destination file path
+# Arguments (passed as flags):
+#   --source <path>     Full source file path (required)
+#   --dest <path>       Full destination file path (required)
+#   [--remove <value>]  Removal option: 'remove' to delete the source after copy,
+#                       whereas 'keep' will retain the source file after copy
 #######################################
-move_file_without_permission_and_ownership() {
-    local source_file="$1"
-    local dest_file="$2"
+copy_file_without_permission_and_ownership() {
+    local source_file=
+    local dest_file=
+    local remove_source_option_value='keep'
 
-    echo "Moving $source_file -> $dest_file"
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+        '--source')
+            source_file="$2"
+            shift 2
+            ;;
+        '--dest')
+            dest_file="$2"
+            shift 2
+            ;;
+        '--remove')
+            remove_source_option_value="$2"
+            shift 2
+            ;;
+        *)
+            printf 'Error(%q): Unknown option: %q\n' "${FUNCNAME[0]}" "$1"
+            print_usage
+            return 1
+            ;;
+        esac
+    done
+
+    local source_file_hash="$(compute_hash "$source_file")"
+
+    local source_file_short_name="${source_file/#"$HOME"/}"
+    local dest_file_short_name="${dest_file/#"$HOME"/}"
+
+    printf 'Info(%q): Starting copying file to %q\n' "$source_file_short_name" "$dest_file_short_name"
 
     if [[ "$source_file" == "$dest_file" ]]; then
-        echo "Info: Skipping move. Source and destination paths are identical: $source_file"
+        printf 'Info(%q): Skipping move. Source and destination paths are identical\n' "$source_file_short_name"
         return
     fi
 
     if [[ -f "$dest_file" ]]; then
-        if [[ "$(compute_hash "$source_file")" == "$(compute_hash "$dest_file")" ]]; then
-            echo "Info: Skipping move. Source and destination files are identical"
+        if [[ "$source_file_hash" == "$(compute_hash "$dest_file")" ]]; then
+            printf 'Info(%q): Source and destination have the same file\n' "$source_file_short_name"
             return
         else
-            echo "Error: There is already a different file at the destination with the same name $dest_file"
-            exit 1
+            printf 'Error(%q): There is already a different file at the destination with the same name\n' "$source_file_short_name"
+            return 1
         fi
     fi
 
+    local dest_dir="$(dirname "$dest_file")"
+    local dest_dir_short_name="${dest_file/#"$HOME"/}"
+
     # Ensure destination directory exists
-    mkdir -p "$(dirname "$dest_file")" || {
-        echo 'Error: Could not create destination directory'
-        exit 1
+    mkdir -p "$dest_dir" || {
+        printf 'Error(%q): Could not create destination directory %q\n' "$source_file_short_name" "$dest_dir_short_name"
+        return 1
     }
 
-    sudo mv --update=none-fail "$source_file" "$dest_file" || {
-        echo 'Error: Could not move file'
-        exit 1
+    sudo cp --update=none-fail "$source_file" "$dest_file" || {
+        printf 'Error(%q): Could not copy file\n' "$source_file_short_name"
+        return 1
     }
 
-    sudo chown "$USER:$USER" "$dest_file" || exit 1
-    sudo chmod 644 "$dest_file" || exit 1
+    # Make sure that the sorce and dest files are the same
+    if [[ "$source_file_hash" == "$(compute_hash "$dest_file")" ]]; then
+        printf 'Info(%q): Finished copying file to %q (success)\n' "$source_file_short_name" "$dest_file_short_name"
+    else
+        printf 'Error(%q): Copy failed with divergent hashes\n' "$source_file_short_name"
+        return 1
+    fi
+
+    case "$remove_source_option_value" in
+    'keep')
+        # Explicitly do nothing
+        ;;
+    'remove')
+        sudo rm "$source_file" || {
+            printf 'Error(%q): Could not remove file\n' "$source_file_short_name"
+            return 1
+        }
+        ;;
+    *)
+        # This should never happen, but it is checked anyway
+        printf 'Error(%q): Unexpected remove_source_option option: %q\n' "${FUNCNAME[0]}" "$remove_source_option_value"
+        return 1
+        ;;
+    esac
+
+    sudo chown "$USER:$USER" "$dest_file"
+    sudo chmod 644 "$dest_file"
 }
 
 max_parallel_jobs=5
-current_jobs=0
 
 while IFS= read -r source_file; do
     (
-        # Extract capture time from EXIF metadata
-        capture_time=$({
+        set -euo pipefail
+
+        # Get capture time from EXIF metadata
+        capture_time="$({
             capture_time_array=($(sudo exiv2 -q -Qm -Pkt "$source_file" | grep "Exif.\(Photo\|Image\).DateTimeOriginal[[:space:]]\+"))
-            capture_time="${capture_time_array[1]//:/}"
-            if [[ -n "$capture_time" ]]; then
+            if [[ ${#capture_time_array[@]} -ge 2 ]]; then
+                capture_time="${capture_time_array[1]//:/}"
                 echo "${capture_time%??}"
             else
                 echo 'unknown'
             fi
-        })
+        })"
 
-        # Move the main image file
-        file_name=$(basename "$source_file")
+        # Move image file
+        file_name="$(basename "$source_file")"
         dest_file="$dest/$capture_time/$file_name"
-        move_file_without_permission_and_ownership "$source_file" "$dest_file" || exit 1
+        copy_file_without_permission_and_ownership --source "$source_file" --dest "$dest_file" --remove "$remove_option_value"
 
         # Move any sidecar file(s)
         sidecar_patterns=(
             "^.*/${file_name}.xmp$"                                # match base name sidecar (photo.xmp)
             "^.*/${file_name%.*}_[0-9][0-9].${file_name##*.}.xmp$" # match numbered sidecars (photo_01.xmp, photo_02.xmp, etc.)
         )
-        source=$(dirname "$source_file")
+        source="$(dirname "$source_file")"
         for sidecar_pattern in "${sidecar_patterns[@]}"; do
             sudo find "$source" -maxdepth 1 -type f -regex "$sidecar_pattern" | while IFS= read -r source_sidecar_file; do
                 dest_sidecar_file="$dest/$capture_time/$(basename "$source_sidecar_file")"
-                move_file_without_permission_and_ownership "$source_sidecar_file" "$dest_sidecar_file" || exit 1
+                copy_file_without_permission_and_ownership --source "$source_sidecar_file" --dest "$dest_sidecar_file" --remove "$remove_option_value"
             done
         done
     ) &
 
-    ((current_jobs++))
-    if ((current_jobs >= max_parallel_jobs)); then
+    if (("$(jobs -p | wc -l)" >= max_parallel_jobs)); then
         wait -n
-        ((current_jobs--))
     fi
 done
 

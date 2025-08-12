@@ -5,7 +5,7 @@ set -euo pipefail
 PATH="$HOME/.local/scripts:$PATH"
 
 device="$1"
-dir="$HOME/mnt/fuji-x-t5"
+dir="$HOME/mnt/sony-rx100"
 
 if [[ -b "$device" ]]; then
     echo "Mounting block device '$1' ..."
@@ -16,15 +16,16 @@ else
 fi
 
 sources=(
-    "$dir/dcim/100_fuji"
+    "$dir/DCIM/100MSDCF"
 )
 
 empty=true
 empty_msg=
 
 for source in "${sources[@]}"; do
-    find "$source" -type f \( -name '*.JPG' -o -name '*.MOV' \) | pictures-import --dest "$HOME/Pictures/digikam" --remove
-    find "$source" -type f -name '*.RAF' | pictures-import --dest "$HOME/Pictures/darktable" --remove
+    # NOTE: No remove option because this is a shared camera (and SD card)
+    find "$source" -type f \( -name '*.JPG' -o -name '*.MOV' \) | pictures-import --dest "$HOME/Pictures/digikam"
+    find "$source" -type f -name '*.ARW' | pictures-import --dest "$HOME/Pictures/darktable"
 
     files=$(ls -A "$source")
     [[ -n "$files" ]] && empty=false
