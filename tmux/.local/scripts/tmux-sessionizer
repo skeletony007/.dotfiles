@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 sanitize_name() {
-    echo "${1//./_}"
+    echo "${1//\./_}"
 }
 
 case "$#" in
