@@ -1,9 +1,5 @@
 #!/usr/bin/env zsh
 
-if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
-    exec startx
-fi
-
 if [ -z "$TMUX" ]; then
     while true; do
         clear
