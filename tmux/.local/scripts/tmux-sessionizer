@@ -56,7 +56,11 @@ case "$#" in
     if ! tmux has-session -t "=${session_name}" 2>/dev/null; then
         declare -a tmux_command=(tmux new-session -d -c "$start_directory" -s "$session_name")
 
-        shada="${XDG_CONFIG_HOME}/tmux/shada/$(echo "$selected" | shasum -a 1 | cut -d ' ' -f 1 2>/dev/null)"
+        shada=$(
+            find "${XDG_CONFIG_HOME}/tmux/shada/" -name "*$(
+                echo "$selected" | shasum -a 1 | cut -d ' ' -f 1 2>/dev/null
+            )" -type f
+        )
         if [ ! -f "$shada" ]; then
             shada="${XDG_CONFIG_HOME}/tmux/shada/default"
         fi
