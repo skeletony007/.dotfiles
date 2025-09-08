@@ -6,6 +6,11 @@ require("skeletony007.lazy_init")
 
 local skeletony007_group = vim.api.nvim_create_augroup("skeletony007.group", {})
 
+vim.api.nvim_create_autocmd("InsertEnter", {
+    group = skeletony007_group,
+    callback = function() vim.cmd("normal! zz") end,
+})
+
 vim.api.nvim_create_autocmd("TextYankPost", {
     group = skeletony007_group,
     callback = function() vim.highlight.on_yank() end,

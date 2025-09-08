@@ -5,6 +5,8 @@ source $XDG_CONFIG_HOME/vim/skeletony007/colors.vim
 
 syntax enable
 
+autocmd InsertEnter * normal! zz
+
 let g:netrw_dirhistmax = 0
 let g:netrw_browse_split = 0
 let g:netrw_banner = 0
