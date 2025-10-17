@@ -23,6 +23,9 @@ crop='square'
 border_color='#ffffff'
 replace_files_option=false
 smart_replace_files_option=true
+signature=''
+date_option=false
+hash_option=false
 
 print_usage() {
     echo 'Usage: instagram-resizer --crop <crop> --border <border-color> [--replace] [--no-smart-replace]'
@@ -44,6 +47,18 @@ while [[ $# -gt 0 ]]; do
         ;;
     '--no-smart-replace')
         smart_replace_files_option=false
+        shift
+        ;;
+    '--sign')
+        signature="$2"
+        shift 2
+        ;;
+    '--date')
+        date_option=true
+        shift
+        ;;
+    '--hash')
+        hash_option=true
         shift
         ;;
     '-h' | '--help')
@@ -147,18 +162,26 @@ while IFS= read -r source_file; do
     magick "$source_file" \
         -resize "$((width - min_border * 2))x$((height - min_border * 2))>" -background "$border_color" -gravity center -extent "${width}x${height}" -colorspace sRGB \
         -rotate 90 -gravity southwest -font "$watermark_font" -pointsize "$((width / 36))" -stroke "$watermark_color" -fill "$watermark_color" -strokewidth "$((width / 1080))" -annotate "+$((width / 108))+$((width / 108))" "$({
-            # Extract capture time from EXIF metadata (format: YYYYMM)
-            capture_time=$({
-                capture_time_array=($(exiv2 -q -Qm -Pkt "$source_file" | grep "Exif.\(Photo\|Image\).DateTimeOriginal[[:space:]]\+"))
-                capture_time="${capture_time_array[1]//:/}"
-                if [[ -n "$capture_time" ]]; then
-                    echo "${capture_time%??}"
-                else
-                    echo 'unknown'
-                fi
-            })
+            annotation="${signature}"
 
-            echo "@photatogo  $capture_time  $anonymous_file_name"
+            if [ "$date_option" == true ]; then
+                # Extract capture time from EXIF metadata (format: YYYYMM)
+                annotation+="  $({
+                    capture_time_array=($(exiv2 -q -Qm -Pkt "$source_file" | grep "Exif.\(Photo\|Image\).DateTimeOriginal[[:space:]]\+"))
+                    capture_time="${capture_time_array[1]//:/}"
+                    if [[ -n "$capture_time" ]]; then
+                        echo "${capture_time%??}"
+                    else
+                        echo 'unknown'
+                    fi
+                })"
+            fi
+
+            if [ "$hash_option" == true ]; then
+                annotation+="  ${anonymous_file_name}"
+            fi
+
+            echo "$annotation"
         })" -rotate 270 \
         "$dest_file" && exiv2 rm "$dest_file"
 done

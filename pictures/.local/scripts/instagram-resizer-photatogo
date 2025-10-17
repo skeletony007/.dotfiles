@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# Wrapper for instagram-resizer script adding custom signature
+
+instagram-resizer --sign '@photatogo' "$@"
