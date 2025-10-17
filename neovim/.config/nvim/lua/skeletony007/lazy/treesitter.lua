@@ -13,11 +13,7 @@ return {
     {
         "nvim-treesitter/nvim-treesitter-context",
 
-        cmd = {
-            "TSContextEnable",
-            "TSContextDisable",
-            "TSContextToggle",
-        },
+        cmd = "TSContext",
 
         dependencies = { "nvim-treesitter/nvim-treesitter" },
 
