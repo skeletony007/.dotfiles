@@ -64,8 +64,11 @@ return {
 
         config = function()
             local formatterconfig = require("formatterconfig")
-            formatterconfig.stylua.setup()
+            formatterconfig.black.setup()
+            formatterconfig.isort.setup()
             formatterconfig.prettier.setup()
+            formatterconfig.shfmt.setup()
+            formatterconfig.stylua.setup()
         end,
     },
 }

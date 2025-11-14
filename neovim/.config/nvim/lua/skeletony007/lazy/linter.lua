@@ -34,8 +34,9 @@ return {
 
         config = function()
             local formatterconfig = require("linterconfig")
-            formatterconfig.golangcilint.setup()
             formatterconfig.ansible_lint.setup()
+            formatterconfig.golangcilint.setup()
+            formatterconfig.vale.setup()
         end,
     },
 }
