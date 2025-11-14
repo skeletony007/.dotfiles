@@ -12,21 +12,6 @@ return {
             "mason-org/mason.nvim",
         },
 
-        config = function()
-            local personal = require("skeletony007.personal")
-            require("mason-lspconfig").setup(personal.mason_lspconfig.setup)
-        end,
-    },
-    {
-        "WhoIsSethDaniel/mason-tool-installer.nvim",
-
-        dependencies = {
-            "mason-org/mason.nvim",
-        },
-
-        config = function()
-            local personal = require("skeletony007.personal")
-            require("mason-tool-installer").setup(personal.mason_tool_installer.setup)
-        end,
+        config = function() require("mason-lspconfig").setup() end,
     },
 }

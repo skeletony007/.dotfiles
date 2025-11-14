@@ -1,42 +1,71 @@
 return {
-    "stevearc/conform.nvim",
+    {
+        "stevearc/conform.nvim",
 
-    config = function()
-        local personal = require("skeletony007.personal")
+        config = function()
+            local conform = require("conform")
+            conform.setup()
+            local conform_group = vim.api.nvim_create_augroup("skeletony007.conform", {})
 
-        local conform = require("conform")
-        conform.setup()
-        local group = vim.api.nvim_create_augroup("skeletony007.conform", {})
+            vim.api.nvim_create_autocmd("BufEnter", {
+                callback = function(args)
+                    local bufnr = args.buf
+                    local formatters_by_ft = conform.formatters_by_ft[vim.bo[bufnr].filetype]
+                    if formatters_by_ft == nil or vim.tbl_isempty(formatters_by_ft) == true then
+                        return
+                    end
+                    vim.keymap.set(
+                        { "n", "v" },
+                        "gq",
+                        function()
+                            conform.format({
+                                lsp_fallback = true,
+                                timeout_ms = 500,
+                            })
+                        end,
+                        { buffer = bufnr }
+                    )
+                end,
+                group = conform_group,
+            })
 
-        for ft, formatters in pairs(personal.formatters_by_ft) do
-            vim.api.nvim_create_autocmd("FileType", {
-                group = group,
-                pattern = ft,
-                callback = function()
-                    for _, formatter in ipairs(formatters) do
-                        if personal.formatter_init[formatter]() then
-                            conform.formatters_by_ft[ft] =
-                                personal.merge_table_recursive(conform.formatters_by_ft[ft] or {}, { formatter })
-                        elseif conform.formatters_by_ft[ft] then
-                            conform.formatters_by_ft[ft] = vim.tbl_filter(
-                                function(entry) return entry ~= formatter end,
-                                conform.formatters_by_ft[ft]
-                            )
+            vim.api.nvim_create_autocmd("LspAttach", {
+                callback = function(args)
+                    local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+                    local bufnr = args.buf
+                    local formatters_by_ft = conform.formatters_by_ft[vim.bo[bufnr].filetype]
+                    if client:supports_method("textDocument/formatting") then
+                        if formatters_by_ft ~= nil and vim.tbl_isempty(formatters_by_ft) == false then
+                            return
                         end
+                        vim.keymap.set(
+                            { "n", "v" },
+                            "gq",
+                            function()
+                                conform.format({
+                                    lsp_format = "prefer",
+                                    timeout_ms = 500,
+                                })
+                            end,
+                            { buffer = bufnr }
+                        )
                     end
                 end,
+                group = conform_group,
             })
-        end
+        end,
+    },
+    {
+        "skeletony007/nvim-formatterconfig",
 
-        vim.keymap.set(
-            { "n", "v" },
-            "gq",
-            function()
-                conform.format({
-                    lsp_fallback = true,
-                    timeout_ms = 500,
-                })
-            end
-        )
-    end,
+        dependencies = { "stevearc/conform.nvim" },
+
+        dir = os.getenv("PERSONAL") .. "/nvim-formatterconfig",
+
+        config = function()
+            local formatterconfig = require("formatterconfig")
+            formatterconfig.stylua.setup()
+            formatterconfig.prettier.setup()
+        end,
+    },
 }

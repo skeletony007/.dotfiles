@@ -1,47 +1,41 @@
 return {
-    "mfussenegger/nvim-lint",
+    {
+        "mfussenegger/nvim-lint",
 
-    config = function()
-        local personal = require("skeletony007.personal")
+        config = function()
+            local lint = require("lint")
+            lint.linters_by_ft = {}
+            local lint_group = vim.api.nvim_create_augroup("skeletony007.lint", {})
+            local function lint_buffer() lint.try_lint() end
 
-        local lint = require("lint")
-        lint.linters_by_ft = {}
-        local group = vim.api.nvim_create_augroup("skeletony007.lint", {})
-
-        for ft, linters in pairs(personal.linters_by_ft) do
-            vim.api.nvim_create_autocmd("FileType", {
-                group = group,
-                pattern = ft,
-                callback = function()
-                    for _, linter in ipairs(linters) do
-                        if personal.linter_init[linter]() then
-                            lint.linters_by_ft[ft] =
-                                personal.merge_table_recursive(lint.linters_by_ft[ft] or {}, { linter })
-                        elseif lint.linters_by_ft[ft] then
-                            lint.linters_by_ft[ft] = vim.tbl_filter(
-                                function(entry) return entry ~= linter end,
-                                lint.linters_by_ft[ft]
-                            )
-                        end
-                    end
-                end,
+            vim.api.nvim_create_autocmd("BufWritePost", {
+                group = lint_group,
+                callback = lint_buffer,
             })
-        end
 
-        vim.api.nvim_create_autocmd("BufWritePost", {
-            group = group,
-            callback = function() lint.try_lint() end,
-        })
+            vim.api.nvim_create_user_command("Lint", lint_buffer, {})
 
-        vim.api.nvim_create_user_command("Lint", function() lint.try_lint() end, {})
+            vim.api.nvim_create_user_command("LintInfo", function()
+                local linters = lint.linters_by_ft[vim.bo.filetype] or {}
+                if #linters == 0 then
+                    vim.notify("no linters for this buffer")
+                else
+                    vim.notify("linters for this buffer: " .. table.concat(linters, ", ") .. "\n")
+                end
+            end, {})
+        end,
+    },
+    {
+        "skeletony007/nvim-linterconfig",
 
-        vim.api.nvim_create_user_command("LintInfo", function()
-            local linters = lint.linters_by_ft[vim.bo.filetype] or {}
-            if #linters == 0 then
-                vim.notify("no linters for this buffer")
-            else
-                vim.notify("linters for this buffer: " .. table.concat(linters, ", ") .. "\n")
-            end
-        end, {})
-    end,
+        dependencies = { "mfussenegger/nvim-lint" },
+
+        dir = os.getenv("PERSONAL") .. "/nvim-linterconfig",
+
+        config = function()
+            local formatterconfig = require("linterconfig")
+            formatterconfig.golangcilint.setup()
+            formatterconfig.ansible_lint.setup()
+        end,
+    },
 }
