@@ -30,5 +30,5 @@ yabai -m config                                 \
                                                                                                    
 # configure spaces
 for i in {1..9}; do
-    yabai -m space $i --label space-$i
+    yabai -m space "$i" --label "space-${i}"
 done
