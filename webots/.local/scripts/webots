@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# NOTE: just adding `${WEBOTS_HOME_PATH}/MacOS/webots` to path does not work
+# because Webots expects a QT environment
+"${WEBOTS_HOME_PATH}/MacOS/webots" "$@" 
