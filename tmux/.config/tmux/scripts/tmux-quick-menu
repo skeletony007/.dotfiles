@@ -1,0 +1,63 @@
+#!/usr/bin/env sh
+
+TMUX_QUICK_MENU_FILE="${XDG_CONFIG_HOME-${HOME}/.config}/tmux/tmux-quick-menu"
+
+usage="""Tmux quick menu (inpired by Harpoon for Neovim)
+
+Usage:
+
+    ${0} select <key>
+    ${0} replace-at <key> <new-value>
+"""
+
+case "$1" in
+"select")
+    key="$2"
+
+    i=1
+    while IFS= read -r value; do
+        if [ "$i" -eq "$key" ]; then
+            echo "$value"
+            exit 0
+        fi
+        i=$((i + 1))
+    done <"$TMUX_QUICK_MENU_FILE"
+
+    echo "key ${key} out of range"
+    exit 1
+    ;;
+"replace-at")
+    key="$2"
+    new_value="$3"
+
+    data="$(
+        i=1
+        while IFS= read -r value; do
+            if [ "$i" -eq "$key" ]; then
+                echo "$new_value"
+            else
+                echo "$value"
+            fi
+            i=$((i + 1))
+        done <"$TMUX_QUICK_MENU_FILE"
+        while [ "$i" -le "$key" ]; do
+            if [ "$i" -eq "$key" ]; then
+                echo "$new_value"
+            else
+                echo
+            fi
+            i=$((i + 1))
+        done
+    )"
+    echo "$data" >"$TMUX_QUICK_MENU_FILE"
+    ;;
+*-h*)
+    # help (matches -h or --help)
+    echo "$usage"
+    exit 0
+    ;;
+*)
+    echo "$usage"
+    exit 1
+    ;;
+esac
