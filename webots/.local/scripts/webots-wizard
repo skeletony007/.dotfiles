@@ -1,0 +1,280 @@
+#!/usr/bin/env bash
+
+set -e
+
+print_usage() {
+    echo 'Create new Webots projects and worldfiles for Webots version R2025a.'
+    echo
+    echo 'Usage:'
+    echo
+    echo "${0} [--new-project|-n] --root <root-directory> --world-name <name> [--center-view-point] [--add-a-textured-background] [--add-a-directional-light] [--add-a-rectangular-arena] [--interactive|-i]"
+    echo
+    echo 'Suggested:'
+    echo
+    echo "${0} -i --root <root-directory> --world-name <name> --new-project"
+    echo
+}
+
+new_project=false
+webots_root=
+
+# worldfile options
+world_name=
+
+center_view_point=false
+add_a_textured_background=false
+add_a_directional_light=false
+add_a_rectangular_arena=false
+
+interactive=false
+
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+    '--new-project' | '-n')
+        new_project=true
+        shift 1
+        ;;
+    '--root' | '--directory')
+        webots_root="$2"
+        shift 2
+        ;;
+    '--world-name')
+        world_name="$2"
+        shift 2
+        ;;
+    '--center-view-point')
+        center_view_point=true
+        shift 1
+        ;;
+    '--add-a-textured-background')
+        add_a_textured_background=true
+        shift 1
+        ;;
+    '--add-a-directional-light')
+        add_a_directional_light=true
+        shift 1
+        ;;
+    '--add-a-rectangular-arena')
+        add_a_rectangular_arena=true
+        shift 1
+        ;;
+    '--interactive' | '-i')
+        interactive=true
+        shift 1
+        ;;
+    '-h' | '--help')
+        print_usage
+        exit 0
+        ;;
+    *)
+        echo "Unknown option: ${1}"
+        print_usage
+        exit 1
+        ;;
+    esac
+done
+
+if [[ -z "$webots_root" ]]; then
+    echo "Must provide --root option value"
+    exit 1
+fi
+
+if [[ "$interactive" == true ]]; then
+    echo "Interactive Webots world setup"
+    echo "Select features to include in the world:"
+    echo
+
+    # Default values (Webots version: R2025a)
+    center_view_point=true
+    add_a_textured_background=true
+    add_a_directional_light=true
+    add_a_rectangular_arena=false
+
+    read -rp "Include Center Viewpoint? (Y/n) " ans
+    [[ "$ans" =~ ^[Yy]$ ]] && center_view_point=true
+
+    read -rp "Include Textured Background? (Y/n) " ans
+    [[ "$ans" =~ ^[Yy]$ ]] && add_a_textured_background=true
+
+    read -rp "Include Directional Light? (Y/n) " ans
+    [[ "$ans" =~ ^[Yy]$ ]] && add_a_directional_light=true
+
+    read -rp "Include Rectangular Arena? (y/N) " ans
+    [[ "$ans" =~ ^[Yy]$ ]] && add_a_rectangular_arena=true
+
+    echo
+fi
+
+if [[ -z "$world_name" ]]; then
+    echo "Must provide --world-name option value"
+    exit 1
+fi
+
+worldfile="${webots_root}/worlds/${world_name}.wbt"
+wbproj_file="${webots_root}/worlds/.${world_name}.wbproj"
+
+for file in "$worldfile" "$wbproj_file"; do
+    if [[ -e "$file" ]]; then
+        echo "Error: File already exists ${file}"
+        exit 1
+    fi
+done
+
+if [[ "$new_project" == true ]]; then
+    directories=(
+        # "controllers" is optional but is added anyway
+        "${webots_root}/controllers"
+        "${webots_root}/worlds"
+    )
+
+    echo "Creating new Webots project"
+    echo
+    echo "The following directories will be created:"
+    echo
+    for dir in "${directories[@]}"; do
+        echo "$dir"
+    done
+    echo
+    mkdir -p "${directories[@]}"
+else
+    # The root directory of a project contains at least a directory called
+    # "worlds" containing a single world file
+    if ! find "${project_root}/worlds" -maxdepth 1 -type f -name '*.wbt'; then
+        echo "Error: Provided path is not a Webots root ${webots_root}"
+    fi
+fi
+
+files=(
+    "$worldfile"
+    "$wbproj_file"
+)
+
+echo "Creating new Webots world"
+echo
+echo "The following files will be created:"
+echo
+for file in "${files[@]}"; do
+    echo "$file"
+done
+echo
+
+keys=(
+    'WorldInfo'
+    'Viewpoint'
+    'TexturedBackground'
+    'TexturedBackgroundLight'
+    'Background'
+    'RectangleArena'
+    'DirectionalLight'
+)
+values=(
+    false
+    false
+    false
+    false
+    false
+    false
+    false
+)
+
+get_value() {
+    local key="$1"
+    local value=
+    case "$key" in
+    'WorldInfo') value="${values[0]}" ;;
+    'Viewpoint') value="${values[1]}" ;;
+    'TexturedBackground') value="${values[2]}" ;;
+    'TexturedBackgroundLight') value="${values[3]}" ;;
+    'Background') value="${values[4]}" ;;
+    'RectangleArena') value="${values[5]}" ;;
+    'DirectionalLight') value="${values[6]}" ;;
+    *) exit 1 ;;
+    esac
+    echo "$value"
+}
+
+set_value() {
+    local key="$1"
+    local value="$2"
+    case "$key" in
+    'WorldInfo') values[0]="$value" ;;
+    'Viewpoint') values[1]="$value" ;;
+    'TexturedBackground') values[2]="$value" ;;
+    'TexturedBackgroundLight') values[3]="$value" ;;
+    'Background') values[4]="$value" ;;
+    'RectangleArena') values[5]="$value" ;;
+    'DirectionalLight') values[6]="$value" ;;
+    *) exit 1 ;;
+    esac
+}
+
+# Default nodes before any additional nodes are added (Webots version: R2025a)
+set_value 'WorldInfo' '
+'
+set_value 'Viewpoint' '
+'
+set_value 'Background' '
+  skyColor [
+    0.4 0.7 1
+  ]
+'
+
+additional_nodes=()
+
+if [[ "$center_view_point" == true ]]; then
+    set_value 'Viewpoint' '
+  orientation -0.5773 0.5773 0.5773 2.0944
+  position 0 0 10
+'
+fi
+
+if [[ "$add_a_textured_background" == true ]]; then
+    additional_nodes+=('EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"')
+    set_value 'TexturedBackground' '
+'
+    set_value 'Background' false
+fi
+
+if [[ "$add_a_directional_light" == true ]]; then
+    if [[ "$add_a_textured_background" == true ]]; then
+        additional_nodes+=('EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"')
+        set_value 'TexturedBackgroundLight' '
+'
+    else
+        set_value 'DirectionalLight' '
+  ambientIntensity 1
+  direction 0.1 -0.5 0.3
+'
+    fi
+fi
+
+if [[ "$add_a_rectangular_arena" == true ]]; then
+    additional_nodes+=('EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"')
+    set_value 'RectangleArena' '
+'
+fi
+
+{
+    echo '#VRML_SIM R2025a utf8'
+    for node in "${additional_nodes[@]}"; do
+        echo "$node"
+    done
+    for key in "${keys[@]}"; do
+        value="$(get_value "$key")"
+        if [[ "$value" != false ]]; then
+            echo "${key} {${value}"
+            echo '}'
+        fi
+    done
+} >"$worldfile"
+
+echo 'Webots Project File version R2025a
+perspectives: 000000ff00000000fd00000002000000010000011c0000045bfc0200000001fb0000001400540065007800740045006400690074006f007200000000000000045b0000004500ffffff00000003000004f1000000d9fc0100000001fb0000001a0043006f006e0073006f006c00650041006c006c0041006c006c0100000000000004f10000008700ffffff000004f10000045a00000001000000020000000100000008fc00000000
+simulationViewPerspectives: 000000ff000000010000000200000114000007ba0100000002010000000100
+sceneTreePerspectives: 000000ff00000001000000030000001e000000c0000000000100000002010000000200
+minimizedPerspectives: 000000ff00000000fd00000002000000010000011c0000045bfc0200000001fb0000001400540065007800740045006400690074006f007201000000000000045b0000004500ffffff00000003000009ec000000d9fc0100000001fb0000001a0043006f006e0073006f006c00650041006c006c0041006c006c0100000000000009ec0000008700ffffff000008ce0000045b00000001000000020000000100000008fc00000000
+maximizedDockId: -1
+centralWidgetVisible: 1
+orthographicViewHeight: 1
+textFiles: -1
+consoles: Console:All:All' >"$wbproj_file"
