@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+shell="$1"
+command="$2"
+
+case "$shell" in
+*/zsh)
+    if [ -n "$command" ]; then
+        zsh -ic "$command"
+    else
+        zsh
+    fi
+    ;;
+*)
+    echo "Error: Unrecognised shell ${shell}."
+    sleep 5
+    exit 1
+    ;;
+esac
