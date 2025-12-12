@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 alacritty msg config 'window.opacity=1' \
-    'colors.primary.background="#1e1e1e"'
+    'colors.primary.background="#1a1a1a"'
 
 echo -e 'Reset with
 \033[1;33m
