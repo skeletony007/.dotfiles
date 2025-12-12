@@ -2,12 +2,15 @@ return {
     {
         "saghen/blink.cmp",
 
+        dependencies = { "L3MON4D3/LuaSnip" },
+
         version = "1.*",
 
         config = function()
             local cmp = require("blink.cmp")
 
             cmp.setup({
+                snippets = { preset = "luasnip" },
                 sources = { default = { "lsp" } },
                 completion = {
                     menu = {
