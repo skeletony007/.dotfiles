@@ -2,13 +2,13 @@
 
 TMUX_QUICK_MENU_FILE="${XDG_CONFIG_HOME-${HOME}/.config}/tmux/tmux-quick-menu"
 
-usage="""Tmux quick menu (inpired by Harpoon for Neovim)
+usage="Tmux quick menu was inpired by Harpoon for Neovim
 
 Usage:
 
     ${0} select <key>
     ${0} replace-at <key> <new-value>
-"""
+"
 
 case "$1" in
 "select")
