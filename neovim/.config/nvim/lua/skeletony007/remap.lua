@@ -8,3 +8,6 @@ vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
+
+vim.keymap.set({ "i", "s" }, "<C-k>", function() vim.snippet.jump(1) end, { silent = true })
+vim.keymap.set({ "i", "s" }, "<C-j>", function() vim.snippet.jump(-1) end, { silent = true })
