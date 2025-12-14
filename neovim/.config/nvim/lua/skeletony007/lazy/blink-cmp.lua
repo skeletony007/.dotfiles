@@ -21,6 +21,7 @@ return {
                         },
                     },
                 },
+                signature = { enabled = true },
             })
 
             -- Imitate insert_expand
