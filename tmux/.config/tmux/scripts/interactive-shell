@@ -6,9 +6,9 @@ command="$2"
 case "$shell" in
 */zsh)
     if [ -n "$command" ]; then
-        zsh -ic "$command"
+        exec zsh -ic "$command"
     else
-        zsh
+        exec zsh
     fi
     ;;
 *)
