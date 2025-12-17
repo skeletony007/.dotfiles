@@ -1,2 +1,1 @@
 interactive-shell "$SHELL" "vim '$(find . -maxdepth 1 -iname 'readme*' -type f -size -10k | head -n 1)'"
-interactive-shell "$SHELL"
