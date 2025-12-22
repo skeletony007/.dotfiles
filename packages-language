@@ -13,3 +13,4 @@ yaml prettier
 zsh
 asm nasm gdb
 typst tinymist
+go gopls golangci-lint
