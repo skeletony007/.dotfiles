@@ -13,7 +13,7 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 
 vim.api.nvim_create_autocmd("TextYankPost", {
     group = skeletony007_group,
-    callback = function() vim.highlight.on_yank() end,
+    callback = function() vim.hl.on_yank() end,
 })
 
 vim.g.netrw_browse_split = 0
