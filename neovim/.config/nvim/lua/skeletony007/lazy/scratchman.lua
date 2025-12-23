@@ -6,7 +6,5 @@ return {
         "ScratchFork",
     },
 
-    dir = os.getenv("PERSONAL") .. "/scratchman.nvim",
-
     config = true,
 }

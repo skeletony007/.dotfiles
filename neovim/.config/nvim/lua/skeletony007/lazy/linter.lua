@@ -30,8 +30,6 @@ return {
 
         dependencies = { "mfussenegger/nvim-lint" },
 
-        dir = os.getenv("PERSONAL") .. "/nvim-linterconfig",
-
         config = function()
             local formatterconfig = require("linterconfig")
             formatterconfig.ansible_lint.setup()

@@ -12,8 +12,6 @@ return {
 
     ft = "java",
 
-    dir = os.getenv("WORK") .. "/webots.nvim",
-
     config = function()
         local webots = require("webots")
         webots.openjdk.setup()

@@ -60,8 +60,6 @@ return {
 
         dependencies = { "stevearc/conform.nvim" },
 
-        dir = os.getenv("PERSONAL") .. "/nvim-formatterconfig",
-
         config = function()
             local formatterconfig = require("formatterconfig")
             formatterconfig.black.setup()
