@@ -18,8 +18,8 @@ after-startup-command = [
 start-at-login = true
 
 # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
-enable-normalization-flatten-containers = true
-enable-normalization-opposite-orientation-for-nested-containers = true
+enable-normalization-flatten-containers = false
+enable-normalization-opposite-orientation-for-nested-containers = false
 
 # See: https://nikitabobko.github.io/AeroSpace/guide#layouts
 # The 'accordion-padding' specifies the size of accordion padding
@@ -134,10 +134,10 @@ automatically-unhide-macos-hidden-apps = true
     alt-shift-right = 'move right'
 
     # split in vertical orientation
-    alt-s = 'layout tiles horizontal'
+    alt-s = 'split horizontal'
 
     # split in vertical orientation
-    alt-v = 'layout tiles vertical'
+    alt-v = 'split vertical'
 
     # enter fullscreen mode for the focussed application
     alt-f = 'fullscreen'
@@ -174,6 +174,11 @@ automatically-unhide-macos-hidden-apps = true
     alt-r = 'mode resize'
 
     ctrl-cmd-g = 'exec-and-forget ~/.local/scripts/auto-av'
+
+    # Disable "hide application"
+    cmd-h = []
+    # Disable "hide others"
+    cmd-alt-h = []
 
 # resize window (you can also use the mouse for that)
 #
