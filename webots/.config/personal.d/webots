@@ -3,3 +3,5 @@
 # <https://cyberbotics.com/doc/guide/compiling-controllers-in-a-terminal>
 export WEBOTS_HOME='/Applications/Webots.app'
 export WEBOTS_HOME_PATH="${WEBOTS_HOME}/Contents"
+
+alias webots-cli='webots --mode=realtime --stdout --stderr'
