@@ -3,6 +3,7 @@ vim.g.mapleader = " "
 require("skeletony007.remap")
 require("skeletony007.set")
 require("skeletony007.lazy_init")
+require("skeletony007.note")
 
 local skeletony007_group = vim.api.nvim_create_augroup("skeletony007.group", {})
 

@@ -1,2 +1,1 @@
-interactive-shell "$SHELL" note
-interactive-shell "$SHELL" 'while true; do clear; agenda; echo "Press Enter to refresh or Ctrl+C to quit..."; read -r -t 60; done'
+interactive-shell "$SHELL" "vim '+Note todo'"
