@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-declare -a nap=()
-declare -a seen=()
+nap=()
+seen=()
 
 for package in "$@"; do
     if [[ " ${seen[*]} " =~ " $package " ]]; then

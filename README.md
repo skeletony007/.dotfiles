@@ -15,8 +15,6 @@ git sparse-checkout set package ...
 The git sparse-checkout command can be used to grow the working directory as
 needed.
 
-The bespoke install script handles sparse-checkout add automatically.
-
 **Ansible Roles**
 
 ```

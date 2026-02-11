@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-declare -a all_packages=()
+all_packages=()
 case "$#" in
 0)
     [[ $(
