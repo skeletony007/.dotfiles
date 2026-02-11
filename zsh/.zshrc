@@ -4,7 +4,7 @@ if [ -z "$TMUX" ]; then
     while true; do
         clear
 
-        tmux new-session -A -d -c "$HOME/personal" -s 'personal'
+        tmux new-session -A -d -c "${HOME}/personal" -s 'personal'
 
         if ! tmux has-session 2>/dev/null; then
             exit
@@ -16,28 +16,28 @@ if [ -z "$TMUX" ]; then
     done
 fi
 
-export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CONFIG_HOME="${HOME}/.config"
 
 add_to_path() {
-    if [[ "$PATH" != *"$1"* ]]; then
-        export PATH="$PATH:$1"
+    if [[ ":${PATH}:" != *":${1}:"* ]]; then
+        export PATH="${PATH}:${1}"
     fi
 }
 
 add_to_path_front() {
-    if [[ "$PATH" != *"$1"* ]]; then
-        export PATH="$1:$PATH"
+    if [[ ":${PATH}:" != *":${1}:"* ]]; then
+        export PATH="${1}:${PATH}"
     fi
 }
 
-if [ -d "$XDG_CONFIG_HOME/personal.d" ]; then
-    for f in "$XDG_CONFIG_HOME/personal.d"/*; do
+if [ -d "${XDG_CONFIG_HOME}/personal.d" ]; then
+    for f in "${XDG_CONFIG_HOME}/personal.d"/*; do
         [ -x "$f" ] && . "$f"
     done
     unset f
 fi
 
-export PERSONAL="$HOME/personal"
-export WORK="$HOME/work"
+export PERSONAL="${HOME}/personal"
+export WORK="${HOME}/work"
 
 bindkey -e

@@ -1,42 +1,36 @@
 #!/usr/bin/env bash
 
-sanitize_name() {
-    echo "${1//\./_}"
+find_projects() {
+    {
+        local args=()
+        while IFS=':' read -r _ _ session_path session_windows; do
+            args+=(-not -path "$session_path")
+
+            if [ "$1" = 'inline-preview' ]; then
+                echo "${session_path}: ${session_windows}"
+            else
+                echo "$session_path"
+            fi
+        done < <(
+            tmux list-sessions -F '#{session_attached}:#{session_last_attached}:#{session_path}:#{T:tree_mode_format}' |
+                sort -t ':' -k1n -k2rn 2>/dev/null
+        )
+
+        find "$HOME" "${HOME}/personal" "${HOME}/work" -mindepth 1 -maxdepth 1 -type d "${args[@]}"
+    } | sed "s%^${HOME}/%%"
 }
 
 case "$#" in
 0)
-    find_projects() {
-        {
-            declare -a args=()
-            while IFS=':' read -r _ _ session_path session_windows; do
-                args+=(-not -path "$session_path")
-
-                if [ "$1" = 'inline-preview' ]; then
-                    echo "${session_path}: ${session_windows}"
-                else
-                    echo "$session_path"
-                fi
-            done < <(
-                tmux list-sessions -F '#{session_attached}:#{session_last_attached}:#{session_path}:#{T:tree_mode_format}' |
-                    sort -t ':' -k1n -k2rn 2>/dev/null
-            )
-
-            find "$HOME" "${HOME}/personal" "${HOME}/work" -mindepth 1 -maxdepth 1 -type d "${args[@]}"
-        } | sed "s%^${HOME}/%%"
-    }
     "$0" "$(
-        declare -a args=(--scheme 'path' --tiebreak 'begin,pathname,length' -p '80%,90%')
+        args=(--scheme 'path' --tiebreak 'begin,pathname,length' -p '80%,90%')
         if [ "$(tmux display-message -p '#{window_width}')" -lt 120 ]; then
             find_projects inline-preview | fzf-tmux "${args[@]}" \
                 --delimiter ':' \
                 --nth '1' \
                 --accept-nth '1'
         else
-            find_projects | fzf-tmux "${args[@]}" --preview "
-            $(declare -f sanitize_name)
-            tmux-tree \"\$(sanitize_name '{}')\"
-            "
+            find_projects | fzf-tmux "${args[@]}" --preview 'tmux-tree "$(sanitize-name ''{}'')"'
         fi
     )"
     ;;
@@ -51,10 +45,10 @@ case "$#" in
         exit 1
     fi
 
-    session_name=$(sanitize_name "$selected")
+    session_name=$(sanitize-name "$selected")
 
     if ! tmux has-session -t "=${session_name}" 2>/dev/null; then
-        declare -a tmux_command=(tmux new-session -d -c "$start_directory" -s "$session_name")
+        tmux_command=(tmux new-session -d -c "$start_directory" -s "$session_name")
 
         shada=$(
             find "${XDG_CONFIG_HOME}/tmux/shada/" -name "*$(
