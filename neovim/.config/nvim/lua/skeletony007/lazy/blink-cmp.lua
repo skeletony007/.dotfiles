@@ -9,6 +9,23 @@ return {
 
             cmp.setup({
                 sources = { default = { "lsp" } },
+                keymap = {
+                    preset = "none",
+
+                    ["<C-space>"] = { "show_documentation", "hide_documentation" },
+                    ["<C-e>"] = { "hide", "fallback" },
+                    ["<C-y>"] = { "select_and_accept", "fallback" },
+
+                    ["<Up>"] = { "select_prev", "fallback" },
+                    ["<Down>"] = { "select_next", "fallback" },
+                    ["<C-p>"] = { "select_prev", "fallback_to_mappings" },
+                    ["<C-n>"] = { "select_next", "fallback_to_mappings" },
+
+                    --["<C-k>"] = { "snippet_forward", "fallback" },
+                    --["<C-j>"] = { "snippet_backward", "fallback" },
+
+                    --["<C-s>"] = { "show_signature", "hide_signature", "fallback" },
+                },
                 completion = {
                     menu = {
                         auto_show = false,

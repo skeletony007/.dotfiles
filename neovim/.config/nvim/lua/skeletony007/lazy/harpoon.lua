@@ -1,9 +1,8 @@
-local function harpoon_notify(n)
+local harpoon_notify = function(n)
     vim.notify(string.format("%s added to Harpoon %d", vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":."), n))
 end
 
 return {
-
     "theprimeagen/harpoon",
 
     branch = "harpoon2",
