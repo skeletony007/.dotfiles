@@ -9,21 +9,17 @@ return {
             callback = function()
                 local palette = {
                     base = "none",
-                    panel_bg = "#303030", -- color236
-                    panel_fg = vim.api.nvim_get_hl(0, { name = "Normal" }).fg,
-                    panel_bg_muted = "#1c1c1c", -- color233
-                    panel_fg_muted = vim.api.nvim_get_hl(0, { name = "Comment" }).fg,
-                    panel_bg_focus = "#4e4e4e", -- color239
+                    color0 = "#000000",
+                    color244 = "#808080",
                 }
 
                 local hl_overrides = {
                     Normal = { bg = palette.base },
-                    NormalFloat = { link = "Normal" },
-                    Visual = { bg = palette.panel_bg },
-                    Pmenu = { bg = palette.panel_bg },
-                    PmenuSel = { bg = palette.panel_bg_focus },
-                    StatusLine = { bg = palette.panel_bg, fg = palette.panel_fg },
-                    StatusLineNC = { bg = palette.panel_bg_muted, fg = palette.panel_fg_muted },
+                    StatusLine = { bg = palette.color244, fg = palette.color0, bold = true },
+                    NormalFloat = { bg = palette.base },
+                    FloatBorder = { bg = palette.base },
+                    FloatTitle = { bg = palette.base },
+
                     LineNr = { bg = palette.base },
                     SignColumn = { bg = palette.base },
                     DiagnosticSignError = { bg = palette.base },
@@ -39,6 +35,28 @@ return {
             end,
         })
 
+        local kanagawa = require("kanagawa")
+        kanagawa.setup({
+            compile = true,
+            overrides = function(colors)
+                local theme = colors.theme
+                return {
+                    Visual = { fg = "none", bg = theme.ui.bg_p2 },
+
+                    Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },
+                    PmenuSel = { fg = "none", bg = theme.ui.bg_p2 },
+                    PmenuSbar = { bg = theme.ui.bg_m1 },
+                    PmenuThumb = { bg = theme.ui.bg_p2 },
+
+                    BlinkCmpMenuBorder = { fg = theme.ui.float.fg_border, bg = "none" },
+                    BlinkCmpScrollBarThumb = { bg = theme.ui.bg_p2 },
+                    BlinkCmpLabel = { bg = theme.ui.bg_p1 },
+                    BlinkCmpSource = { bg = theme.ui.bg_p1, bold = true },
+                    BlinkCmpKind = { bg = theme.ui.bg_p1 },
+                }
+            end,
+            theme = "wave",
+        })
         vim.cmd.colorscheme("kanagawa-wave")
     end,
 }
