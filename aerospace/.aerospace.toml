@@ -42,7 +42,6 @@ default-root-container-orientation = 'auto'
 #on-focus-changed = ['move-mouse window-lazy-center']
 # source <https://github.com/nikitabobko/AeroSpace/issues/438>
 on-focus-changed = [
-    'exec-and-forget [ "$(aerospace list-windows --workspace focused | wc -l)" -eq 1 ] && borders width=0.0 || borders width=6.0',
     'move-mouse window-lazy-center',
 ]
 
