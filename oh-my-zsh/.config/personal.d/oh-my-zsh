@@ -7,3 +7,16 @@ ZSH_THEME='robbyrussell'
 plugins=()
 
 source "$ZSH/oh-my-zsh.sh"
+
+relative = function() {
+  if [[ "$PWD" == "$SESSION_PATH" ]]; then
+    echo ''
+  elif [[ "$PWD" == "$SESSION_PATH"/* ]]; then
+    echo "  ${PWD#$SESSION_PATH/}"
+  else
+    echo '  %~'
+  fi
+}
+
+PROMPT='%(?:%{$fg_bold[green]%}%1{➜%}:%{$fg_bold[red]%}%1{➜%})%{$fg[cyan]%}$(relative)%{$reset_color%}'
+PROMPT+=' $(git_prompt_info)'
