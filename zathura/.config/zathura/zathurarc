@@ -13,6 +13,9 @@ map J zoom out
 map K zoom in
 map R rotate
 
+set scroll-step 1
+set scroll-hstep 1
+
 #zoom settings
 set zoom-min 10
 set guioptions ""
