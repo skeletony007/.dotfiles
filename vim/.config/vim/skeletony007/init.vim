@@ -1,3 +1,5 @@
+let g:mapleader = " "
+
 source $XDG_CONFIG_HOME/vim/skeletony007/remap.vim
 source $XDG_CONFIG_HOME/vim/skeletony007/set.vim
 

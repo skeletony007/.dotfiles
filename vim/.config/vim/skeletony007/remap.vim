@@ -1,4 +1,3 @@
-let g:mapleader = " "
 nnoremap <leader>pv :Ex<CR>
 
 vnoremap J :m '>+1<CR>gv=gv
