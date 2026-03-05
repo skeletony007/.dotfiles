@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-if [ -z "$TMUX" ]; then
+start_tmux() {
     while true; do
         clear
 
@@ -14,6 +14,10 @@ if [ -z "$TMUX" ]; then
             sleep 1
         fi
     done
+}
+
+if [ -z "$TMUX" ]; then
+    start_tmux
 fi
 
 export XDG_CONFIG_HOME="${HOME}/.config"
