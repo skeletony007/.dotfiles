@@ -16,7 +16,7 @@ return {
 
         worktree.setup()
 
-        telescope.load_extension("git_worktree")
+        pcall(telescope.load_extension, "git_worktree")
 
         -- <Enter> - switches to that worktree
         -- <c-d> - deletes that worktree

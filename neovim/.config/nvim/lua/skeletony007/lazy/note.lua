@@ -11,7 +11,7 @@ return {
             function()
                 local telescope = require("telescope")
                 if not note_extension_loaded then
-                    telescope.load_extension("note")
+                    pcall(telescope.load_extension, "note")
                     note_extension_loaded = true
                 end
                 telescope.extensions.note.find_notes()

@@ -11,3 +11,5 @@ vim.keymap.set("n", "N", "Nzzzv")
 
 vim.keymap.set({ "i", "s" }, "<C-k>", function() vim.snippet.jump(1) end, { silent = true })
 vim.keymap.set({ "i", "s" }, "<C-j>", function() vim.snippet.jump(-1) end, { silent = true })
+
+vim.keymap.set("n", "<Esc>", function() vim.cmd.nohlsearch() end)

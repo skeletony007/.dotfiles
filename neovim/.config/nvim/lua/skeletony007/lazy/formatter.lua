@@ -69,6 +69,7 @@ return {
             formatterconfig.prettier.setup()
             formatterconfig.shfmt.setup()
             formatterconfig.stylua.setup()
+            formatterconfig.typstyle.setup()
         end,
     },
 }
