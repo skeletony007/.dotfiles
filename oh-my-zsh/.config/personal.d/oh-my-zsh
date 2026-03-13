@@ -14,7 +14,7 @@ relative() {
   elif [[ "$PWD" == "$SESSION_PATH"/* ]]; then
     echo " ${PWD#$SESSION_PATH/}"
   else
-    echo ' ~'
+    echo ' %~'
   fi
 }
 
