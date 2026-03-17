@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+prev_session_name=
+prev_session_last_attached=-1
+
+while IFS=':' read -r session_attached session_last_attached session_name; do
+	if [[ "$session_attached" -eq '0' && "$session_last_attached" -gt "$prev_session_last_attached" ]]; then
+		prev_session_name="$session_name"
+		prev_session_last_attached="$session_last_attached"
+	fi
+done < <(
+	tmux list-sessions -F '#{session_attached}:#{session_last_attached}:#{session_name}'
+)
+
+if [[ -n "$prev_session_name" ]]; then
+	tmux switch-client -t "=${prev_session_name}"
+else
+	echo "no previously attached session found" >&2
+	exit 1
+fi

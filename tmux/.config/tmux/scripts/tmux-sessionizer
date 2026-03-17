@@ -45,7 +45,7 @@ case "$#" in
         exit 1
     fi
 
-    session_name=$(sanitize-name "$selected")
+    session_name="$(sanitize-name "$selected")"
 
     if ! tmux has-session -t "=${session_name}" 2>/dev/null; then
         tmux_command=(tmux new-session -d -c "$start_directory" -s "$session_name")
@@ -72,6 +72,6 @@ case "$#" in
         "${tmux_command[@]}"
     fi
 
-    tmux switch-client -t "=$session_name"
+    tmux switch-client -t "=${session_name}"
     ;;
 esac
